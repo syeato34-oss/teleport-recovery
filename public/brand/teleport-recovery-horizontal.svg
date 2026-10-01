@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 96" role="img" aria-labelledby="horizontal-logo-title">
+  <title id="horizontal-logo-title">Teleport Recovery — UK Vehicle Recovery</title>
+  <defs>
+    <linearGradient id="horizontal-bg" x1="8" y1="5" x2="91" y2="93" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#241A32"/>
+      <stop offset="1" stop-color="#100B19"/>
+    </linearGradient>
+    <linearGradient id="horizontal-main" x1="14" y1="18" x2="84" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8CFFF"/>
+      <stop offset="0.48" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#8B6BE0"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(2 2) scale(.95)">
+    <rect x="2" y="2" width="92" height="92" rx="22" fill="url(#horizontal-bg)" stroke="#56436F" stroke-width="2"/>
+    <path d="M12 18H61L73 29L61 40H12V18Z" fill="url(#horizontal-main)"/>
+    <path d="M27 44H45V78H27V44Z" fill="url(#horizontal-main)"/>
+    <path d="M34 44H40L43 78H31L34 44Z" fill="#100B19"/>
+    <path d="M50 30H65C76 30 82 35 82 44C82 53 76 58 67 58H62V78H50V47H65C69 47 71 46 71 43.5C71 41 69 40 65 40H50V30Z" fill="#F5F3FF" fill-opacity=".94"/>
+    <path d="M64 57H76L87 78H72L60 59L64 57Z" fill="#A78BFA"/>
+  </g>
+  <text x="116" y="43" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="29" font-weight="800" letter-spacing="-1">Teleport</text>
+  <text x="240" y="43" fill="#C4B5FD" font-family="Inter, Arial, sans-serif" font-size="29" font-weight="650" letter-spacing="-.7">Recovery</text>
+  <text x="118" y="66" fill="#D7D1E0" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="600" letter-spacing="2.4">UK VEHICLE RECOVERY</text>
+  <path d="M118 76H214" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/>
+</svg>
