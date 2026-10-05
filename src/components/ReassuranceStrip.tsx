@@ -1,5 +1,5 @@
+import { CallLink } from '@/components/CallLink';
 import { Phone, CheckCircle2 } from 'lucide-react';
-import { businessConfig } from '@/config/business';
 
 const reassuranceItems = [
   'Hear the option and quote before deciding',
@@ -23,10 +23,10 @@ export function ReassuranceStrip() {
           </ul>
 
           {/* Compact CTA */}
-          <a href={businessConfig.phoneHref} className="btn-primary whitespace-nowrap">
+          <CallLink location="reassurancestrip" className="btn-primary whitespace-nowrap">
             <Phone className="h-5 w-5" aria-hidden="true" />
             <span>Call Now</span>
-          </a>
+          </CallLink>
         </div>
       </div>
     </section>

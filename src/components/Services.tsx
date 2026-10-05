@@ -1,6 +1,6 @@
+import { CallLink } from '@/components/CallLink';
 import { services } from '@/config/services';
 import { Phone } from 'lucide-react';
-import { businessConfig } from '@/config/business';
 
 export function Services() {
   return (
@@ -35,10 +35,10 @@ export function Services() {
             <p className="text-base font-semibold text-white">Not sure which service you need?</p>
             <p className="mt-1 text-sm text-text-muted">Call us and we'll help figure it out.</p>
           </div>
-          <a href={businessConfig.phoneHref} className="btn-primary whitespace-nowrap">
+          <CallLink location="services" className="btn-primary whitespace-nowrap">
             <Phone className="h-5 w-5" aria-hidden="true" />
             <span>Call to Discuss</span>
-          </a>
+          </CallLink>
         </div>
       </div>
     </section>

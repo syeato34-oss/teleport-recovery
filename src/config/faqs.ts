@@ -1,6 +1,9 @@
+import { businessConfig } from '@/config/business';
+
 export interface FAQItem {
   question: string;
   answer: string;
+  link?: { href: string; label: string };
 }
 
 export const faqs: FAQItem[] = [
@@ -27,11 +30,22 @@ export const faqs: FAQItem[] = [
   {
     question: 'How do I get in touch?',
     answer:
-      'The fastest way is to call us. You can also message us on WhatsApp, or use the callback form at the bottom of this page and we’ll get back to you.',
+      `The fastest way is to call ${businessConfig.phoneDisplay}. You can also use the callback form at the bottom of this page to request a call about your recovery.`,
   },
   {
     question: 'What is the money-back guarantee?',
     answer:
-      'We stand behind the service we arrange. Full guarantee terms will be published here before launch — please check back or ask us when you call.',
+      `If ${businessConfig.tradingName} accepts payment but is unable to provide the agreed recovery service, the amount paid to Teleport for that booking will be refunded. Conditions and exclusions apply; estimated arrival times are not guaranteed. Your statutory rights are unaffected.`,
+    link: { href: businessConfig.guaranteeUrl, label: 'Read the full Money-Back Guarantee' },
+  },
+  {
+    question: 'Who carries out the recovery?',
+    answer:
+      `${businessConfig.tradingName} manages your booking and may use independent recovery operators to carry out the physical recovery service. Teleport remains your point of contact for the booking.`,
+  },
+  {
+    question: 'Is the average ETA a guaranteed arrival time?',
+    answer:
+      `No. Our ${businessConfig.averageEtaMinutes}-minute average ETA is an average, not a guaranteed arrival time. ${businessConfig.averageEtaQualifier} We’ll confirm the estimated arrival time for your booking before dispatch.`,
   },
 ];

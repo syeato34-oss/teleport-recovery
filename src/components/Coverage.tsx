@@ -1,5 +1,5 @@
+import { CallLink } from '@/components/CallLink';
 import { MapPinned, Navigation } from 'lucide-react';
-import { businessConfig } from '@/config/business';
 
 const COVERAGE_IMAGE =
   'https://images.pexels.com/photos/24343234/pexels-photo-24343234.jpeg?auto=compress&cs=tinysrgb';
@@ -18,6 +18,7 @@ export function Coverage() {
               alt="UK highway at night with traffic"
               className="aspect-[4/3] w-full object-cover"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-midnight/20" aria-hidden="true" />
             <div className="absolute inset-0 ring-1 ring-inset ring-white/5 rounded-xl" aria-hidden="true" />
@@ -67,9 +68,9 @@ export function Coverage() {
             </p>
 
             <div className="mt-8">
-              <a href={businessConfig.phoneHref} className="btn-primary">
-                Check UK Coverage
-              </a>
+              <CallLink location="coverage" className="btn-primary">
+                Call to Check Availability
+              </CallLink>
             </div>
           </div>
         </div>

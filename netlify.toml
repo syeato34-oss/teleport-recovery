@@ -1,0 +1,85 @@
+[build]
+  command = "npm run typecheck && npm run lint && npm test && npm run build"
+  publish = "dist"
+
+# Exact callback.html POST endpoint must stay free of Pretty URL redirects.
+[build.processing.html]
+  pretty_urls = false
+
+# These domains must be assigned to this Netlify project and have valid certificates.
+[[redirects]]
+  from = "http://teleportrecovery.co.uk/*"
+  to = "https://teleportrecovery.co.uk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.teleportrecovery.co.uk/*"
+  to = "https://teleportrecovery.co.uk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.teleportrecovery.co.uk/*"
+  to = "https://teleportrecovery.co.uk/:splat"
+  status = 301
+  force = true
+
+# Only known legal routes get application entry points. Netlify normalizes trailing
+# slashes before matching; slash-to-no-slash redirects would create loops.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/terms/index.html"
+  to = "/terms"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/guarantee/index.html"
+  to = "/guarantee"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/privacy/index.html"
+  to = "/privacy"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/guarantee"
+  to = "/guarantee/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy/index.html"
+  status = 200
+  force = true
+
+# There is deliberately no /* -> index.html 200 rule. Netlify serves the generated
+# 404.html with HTTP 404 for unknown paths and missing assets.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=()"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

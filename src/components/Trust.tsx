@@ -1,5 +1,4 @@
 import { MapPin, Car, Wrench, Flag, ShieldCheck } from 'lucide-react';
-import { businessConfig } from '@/config/business';
 
 const preparationItems = [
   {
@@ -37,22 +36,20 @@ export function Trust() {
               Having these details ready helps us respond faster and more accurately.
             </p>
 
-            <div className="mt-8 space-y-3">
+            <ul className="mt-8 divide-y divide-divider overflow-hidden rounded-xl border border-divider bg-panel/30">
               {preparationItems.map((item) => (
-                <div
+                <li
                   key={item.label}
-                  className="flex items-start gap-4 rounded-lg border border-divider bg-panel/30 p-4"
+                  className="flex items-start gap-4 px-5 py-4 sm:px-6"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-divider bg-midnight-2">
-                    <item.icon className="h-5 w-5 text-accent" aria-hidden="true" />
-                  </span>
+                  <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-semibold text-white">{item.label}</p>
                     <p className="mt-0.5 text-sm text-text-muted">{item.detail}</p>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
           {/* Reassurance */}
@@ -62,11 +59,6 @@ export function Trust() {
               No Surprises
             </span>
             <h2 className="heading-lg mt-3 text-white">You Stay in Control</h2>
-            <p className="mt-4 body-lg">
-              We'll explain the available option and quote before anything is arranged. You decide
-              whether to proceed.
-            </p>
-
             <div className="mt-8 space-y-5">
               <div className="rounded-lg border border-divider bg-panel/30 p-5">
                 <p className="text-sm font-semibold text-white">Hear the quote first</p>
@@ -82,30 +74,6 @@ export function Trust() {
               </div>
             </div>
 
-            {businessConfig.reviews.length > 0 && (
-              <div className="mt-8 space-y-4">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.15em] text-accent-light">
-                  Customer Reviews
-                </h3>
-                {businessConfig.reviews.map((review, i) => (
-                  <blockquote
-                    key={i}
-                    className="rounded-lg border border-divider bg-panel/30 p-5"
-                  >
-                    <p className="text-sm italic text-text-muted">"{review.text}"</p>
-                    <footer className="mt-3 text-xs text-text-muted/70">
-                      — {review.name}, {review.location}
-                    </footer>
-                  </blockquote>
-                ))}
-              </div>
-            )}
-
-            {businessConfig.reviews.length === 0 && (
-              <p className="mt-8 text-xs text-text-muted/50">
-                Customer reviews will appear here once verified.
-              </p>
-            )}
           </div>
         </div>
       </div>

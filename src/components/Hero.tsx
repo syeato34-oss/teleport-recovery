@@ -1,6 +1,8 @@
-import { Phone, MessageCircle, MapPin } from 'lucide-react';
+import { CallLink } from '@/components/CallLink';
+import { Phone, MapPin } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { HeroAmbientVisual } from '@/components/HeroAmbientVisual';
+import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
 
 const HERO_IMAGE =
   'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1920';
@@ -10,7 +12,7 @@ const HERO_IMAGE_MOBILE =
 const TRUST_MESSAGES = [
   { text: 'UK-WIDE COVERAGE.', className: 'text-white' },
   { text: 'CLEAR PRICE BEFORE DISPATCH.', className: 'text-text-muted' },
-  { text: 'ETA — 30 MINUTES AVERAGE.', className: 'text-accent-light' },
+  { text: `${businessConfig.averageEtaMinutes} MIN AVERAGE ETA*`, className: 'text-accent-light' },
 ];
 
 export function Hero() {
@@ -25,17 +27,10 @@ export function Hero() {
           alt="Recovery truck loading a vehicle on the roadside"
           className="hero-background-motion h-full w-full object-cover object-center"
           loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
-        {/* Darkening overlays for text readability */}
-        <div className="absolute inset-0 bg-midnight/70" aria-hidden="true" />
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/50 to-midnight/40"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-midnight/90 via-midnight/40 to-transparent"
-          aria-hidden="true"
-        />
+        <div className="hero-image-shade absolute inset-0" aria-hidden="true" />
       </div>
 
       <HeroAmbientVisual />
@@ -60,14 +55,37 @@ export function Hero() {
               24/7 RECOVERY.
             </span>
             <span className="mt-3 block text-xl font-bold leading-tight tracking-[-0.02em] text-white sm:text-2xl lg:mt-4 lg:text-[2rem]">
-              MONEY-BACK GUARANTEE.
+              <a href={businessConfig.guaranteeUrl} className="underline-offset-4 hover:underline">
+                MONEY-BACK GUARANTEE*
+              </a>
             </span>
           </h1>
+          <p className="mt-3 max-w-xl text-[13px] leading-5 text-text-muted sm:text-sm">
+            {businessConfig.guaranteeSummary}{' '}
+            <a href={businessConfig.guaranteeUrl} className="text-accent-light underline underline-offset-4">
+              Terms apply.
+            </a>
+          </p>
+
+          {/* CTAs */}
+          <div className="hero-actions mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+            <CallLink location="hero"
+              className="btn-primary hero-call-cta h-[58px] min-h-[58px] gap-3 whitespace-nowrap px-8 py-0 text-lg font-bold sm:h-[60px] sm:min-h-[60px] sm:px-10"
+              aria-label={`Call ${businessConfig.tradingName} at ${businessConfig.phoneDisplay}`}
+            >
+              <Phone className="hero-call-icon h-[22px] w-[22px]" aria-hidden="true" />
+              <span>Call {businessConfig.phoneDisplay}</span>
+            </CallLink>
+            <WhatsAppLocationButton
+              location="hero"
+              className="hero-whatsapp-cta h-[58px] min-h-[58px] whitespace-nowrap px-5 py-0 text-base font-semibold sm:h-[60px] sm:min-h-[60px] sm:px-6"
+            />
+          </div>
 
           {/* Supporting copy */}
-          <p className="mt-5 max-w-xl text-lg font-medium leading-8 text-text-main/90 sm:text-xl">
-            Need recovery anywhere in the UK? Send us your location and destination.
-            <br className="hidden sm:block" /> We’ll confirm the price and ETA before dispatch.
+          <p className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-text-main/90 sm:text-xl">
+            Need recovery anywhere in the UK? Send us your pickup location and destination — we’ll confirm
+            the price and ETA before dispatch.
           </p>
 
           {/* Trust signals */}
@@ -81,43 +99,8 @@ export function Hero() {
             </ul>
           </div>
 
-          {/* CTAs */}
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a
-              href={businessConfig.phoneHref}
-              className="btn-primary hero-call-cta h-[58px] min-h-[58px] gap-3 px-8 py-0 text-lg font-bold sm:h-[60px] sm:min-h-[60px] sm:px-10"
-              aria-label={`Call ${businessConfig.name} at ${businessConfig.phoneNumber}`}
-            >
-              <Phone className="hero-call-icon h-[22px] w-[22px]" aria-hidden="true" />
-              <span>Call Now</span>
-            </a>
-            <a
-              href={businessConfig.whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary hero-whatsapp-cta h-[58px] min-h-[58px] gap-3 px-8 py-0 text-lg font-semibold sm:h-[60px] sm:min-h-[60px] sm:px-9"
-              aria-label="Contact us on WhatsApp"
-            >
-              <MessageCircle
-                className="hero-whatsapp-icon h-[22px] w-[22px] text-accent-light"
-                aria-hidden="true"
-              />
-              <span>WhatsApp</span>
-            </a>
-          </div>
-
-          {/* Phone number display */}
-          <p className="mt-4 text-base font-medium text-text-muted sm:text-lg">
-            Call us on{' '}
-            <a href={businessConfig.phoneHref} className="font-bold text-white underline-offset-4 hover:underline">
-              {businessConfig.phoneNumber}
-            </a>
-          </p>
-
-          {/* Reassurance */}
-          <p className="mt-4 max-w-lg border-l border-accent/40 pl-4 text-[13px] leading-6 text-text-muted/75 sm:text-sm">
-            We'll explain the available option and quote before anything is arranged. You decide
-            whether to go ahead.
+          <p className="mt-3 max-w-xl text-[13px] leading-5 text-text-muted">
+            *{businessConfig.averageEtaQualifier}
           </p>
         </div>
       </div>

@@ -1,24 +1,39 @@
-import { useEffect, useState } from 'react';
+import { CallLink } from '@/components/CallLink';
+import { useEffect, useRef, useState } from 'react';
 import { Phone, Menu, X } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { BrandLogo } from '@/components/BrandLogo';
 
 const navLinks = [
-  { label: 'Services', href: '#services' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Coverage', href: '#coverage' },
-  { label: 'FAQs', href: '#faqs' },
+  { label: 'Services', href: '/#services' },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Coverage', href: '/#coverage' },
+  { label: 'FAQs', href: '/#faqs' },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
 
   return (
     <header
@@ -29,7 +44,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between lg:h-[72px]">
           {/* Brand */}
-          <a href="#top" aria-label={`${businessConfig.name} home`}>
+          <a href="/#top" aria-label={`${businessConfig.tradingName} home`}>
             <BrandLogo />
           </a>
 
@@ -44,30 +59,30 @@ export function Header() {
 
           {/* Desktop call button */}
           <div className="hidden lg:flex items-center gap-3">
-            <a href={businessConfig.phoneHref} className="btn-primary" aria-label={`Call ${businessConfig.phoneNumber}`}>
+            <CallLink location="header" className="btn-primary" aria-label={`Call ${businessConfig.phoneDisplay}`}>
               <Phone className="h-5 w-5" aria-hidden="true" />
-              <span>{businessConfig.phoneNumber}</span>
-            </a>
+              <span>{businessConfig.phoneDisplay}</span>
+            </CallLink>
           </div>
 
           {/* Mobile controls */}
           <div className="flex items-center gap-2 lg:hidden">
-            <a
-              href={businessConfig.phoneHref}
-              className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-midnight transition-colors hover:bg-accent-light"
-              aria-label={`Call ${businessConfig.phoneNumber}`}
+            <CallLink location="header"
+              className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-midnight transition-colors hover:bg-accent-light"
+              aria-label={`Call ${businessConfig.phoneDisplay}`}
             >
               <Phone className="h-5 w-5" aria-hidden="true" />
-            </a>
+            </CallLink>
             <button
+              ref={menuButton}
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-divider text-text-main"
+              className="flex h-11 w-11 items-center justify-center rounded-lg border border-divider text-text-main"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
             </button>
           </div>
         </div>

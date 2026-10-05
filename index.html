@@ -4,41 +4,36 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teleport Recovery | UK Vehicle Recovery</title>
-    <meta
-      name="description"
-      content="Stranded? We help arrange vehicle recovery across the UK. Call for breakdown recovery, roadside assistance, accident recovery and vehicle transportation. Tell us your location and we will help."
-    />
-    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#100B19" />
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="en_GB" />
-    <meta property="og:title" content="Teleport Recovery | UK Vehicle Recovery" />
-    <meta
-      property="og:description"
-      content="Stranded? We help arrange vehicle recovery across the UK. Call for breakdown recovery, roadside assistance, accident recovery and vehicle transportation."
-    />
-    <meta
-      property="og:image"
-      content="https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1200"
-    />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Teleport Recovery | UK Vehicle Recovery" />
-    <meta
-      name="twitter:description"
-      content="Stranded? We help arrange vehicle recovery across the UK. Call for breakdown recovery, roadside assistance, accident recovery and vehicle transportation."
-    />
-    <meta
-      name="twitter:image"
-      content="https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1200"
-    />
-</head>
+    <link rel="preconnect" href="https://images.pexels.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Metadata is generated from src/config/business.ts by Vite. -->
+    <!-- business-metadata -->
+  </head>
   <body>
+    <!-- Netlify detects this static blueprint; the visible form is rendered by React. -->
+    <form
+      name="recovery-callback"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      aria-hidden="true"
+      inert
+      style="position:absolute;overflow:hidden;clip:rect(0 0 0 0);height:1px;width:1px;margin:-1px;padding:0;border:0"
+    >
+      <input type="hidden" name="form-name" value="recovery-callback" />
+      <label>Name <input type="text" name="name" tabindex="-1" /></label>
+      <label>Phone <input type="tel" name="phone" tabindex="-1" /></label>
+      <label>Location <input type="text" name="location" tabindex="-1" /></label>
+      <label>Details <textarea name="details" tabindex="-1"></textarea></label>
+      <label>Leave empty <input type="text" name="bot-field" tabindex="-1" /></label>
+    </form>
     <div id="root"></div>
+    <noscript>
+      <p>This website needs JavaScript to display its pages and callback form.</p>
+      <!-- business-noscript -->
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

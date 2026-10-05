@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { CallLink } from '@/components/CallLink';
+import { Fragment, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { faqs } from '@/config/faqs';
 import { businessConfig } from '@/config/business';
@@ -24,6 +25,7 @@ export function FAQs() {
                 key={i}
                 className="rounded-xl border border-divider bg-panel/30 overflow-hidden transition-colors hover:border-divider/80"
               >
+                <h3>
                 <button
                   id={triggerId}
                   type="button"
@@ -40,6 +42,7 @@ export function FAQs() {
                     aria-hidden="true"
                   />
                 </button>
+                </h3>
                 <div
                   id={panelId}
                   role="region"
@@ -50,7 +53,25 @@ export function FAQs() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-text-muted">{faq.answer}</p>
+                    <p className="px-5 pb-5 text-sm leading-relaxed text-text-muted">
+                      {faq.answer.split(businessConfig.phoneDisplay).map((part, index) => (
+                        <Fragment key={index}>
+                          {index > 0 && <CallLink
+                            location="faq_contact"
+                            tabIndex={isOpen ? 0 : -1}
+                            className="text-accent-light underline underline-offset-4"
+                          >{businessConfig.phoneDisplay}</CallLink>}
+                          {part}
+                        </Fragment>
+                      ))}
+                      {faq.link && (
+                        <>{' '}<a
+                          href={faq.link.href}
+                          tabIndex={isOpen ? 0 : -1}
+                          className="text-accent-light underline underline-offset-4"
+                        >{faq.link.label}</a></>
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -60,9 +81,9 @@ export function FAQs() {
 
         <div className="mt-10 text-center">
           <p className="text-sm text-text-muted">Still have questions?</p>
-          <a href={businessConfig.phoneHref} className="btn-primary mt-4">
+          <CallLink location="faqs" className="btn-primary mt-4">
             Call Us — We're Happy to Help
-          </a>
+          </CallLink>
         </div>
       </div>
     </section>
