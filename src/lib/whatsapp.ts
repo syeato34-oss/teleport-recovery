@@ -59,16 +59,15 @@ export function getPickupLocation(geolocation?: Pick<Geolocation, 'getCurrentPos
 }
 
 /** Coordinates exist only in this draft URL; no storage, network request or analytics here. */
-export function buildWhatsAppRecoveryUrl(destination: string, location: PickupLocation | null): string {
-  const maps = new URL('https://www.google.com/maps/search/');
-  maps.searchParams.set('api', '1');
+export function buildWhatsAppRecoveryUrl(destination: string, location: PickupLocation | null = null): string {
+  let pickup = '';
   if (location && isUsableLocation(location)) {
+    const maps = new URL('https://www.google.com/maps/search/');
+    maps.searchParams.set('api', '1');
     maps.searchParams.set('query', `${location.latitude},${location.longitude}`);
+    pickup = `\n${maps.toString()}`;
   }
-  const pickup = maps.searchParams.has('query')
-    ? maps.toString()
-    : 'Please send your current location in WhatsApp.';
-  const message = `Hi Teleport Recovery, I need vehicle recovery.\n\nPickup:\n${pickup}\n\nDestination:\n\nVehicle:\n\nWhat happened:`;
+  const message = `Hi Teleport Recovery, I need vehicle recovery.\n\nPickup:${pickup}\n\nDestination:\n\nVehicle / reg:\n\nWhat happened:`;
   const url = new URL(destination);
   url.searchParams.set('text', message);
   return url.toString();

@@ -2,7 +2,7 @@ import { CallLink } from '@/components/CallLink';
 import { Phone, MapPin } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { HeroAmbientVisual } from '@/components/HeroAmbientVisual';
-import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
+import { WhatsAppLink } from '@/components/WhatsAppLink';
 
 const HERO_IMAGE =
   'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1920';
@@ -48,10 +48,10 @@ export function Hero() {
 
           {/* Headline */}
           <h1 className="text-white">
-            <span className="block text-[clamp(3.5rem,12vw,5rem)] font-extrabold leading-[0.9] tracking-[-0.045em] lg:text-[5.5rem]">
+            <span className="block break-words text-[clamp(3.5rem,12vw,5rem)] font-extrabold leading-[0.9] tracking-[-0.045em] lg:text-[5.5rem]">
               FAST.
             </span>
-            <span className="mt-2 block whitespace-nowrap text-[clamp(2.35rem,10vw,4.25rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-accent">
+            <span className="mt-2 block break-words text-[clamp(2.35rem,10vw,4.25rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-accent">
               24/7 RECOVERY.
             </span>
             <span className="mt-3 block text-xl font-bold leading-tight tracking-[-0.02em] text-white sm:text-2xl lg:mt-4 lg:text-[2rem]">
@@ -71,14 +71,14 @@ export function Hero() {
           <div className="hero-actions mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
             <CallLink location="hero"
               className="btn-primary hero-call-cta h-[58px] min-h-[58px] gap-3 whitespace-nowrap px-8 py-0 text-lg font-bold sm:h-[60px] sm:min-h-[60px] sm:px-10"
-              aria-label={`Call ${businessConfig.tradingName} at ${businessConfig.phoneDisplay}`}
+              aria-label={`Call ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
             >
               <Phone className="hero-call-icon h-[22px] w-[22px]" aria-hidden="true" />
               <span>Call {businessConfig.phoneDisplay}</span>
             </CallLink>
-            <WhatsAppLocationButton
+            <WhatsAppLink
               location="hero"
-              className="hero-whatsapp-cta h-[58px] min-h-[58px] whitespace-nowrap px-5 py-0 text-base font-semibold sm:h-[60px] sm:min-h-[60px] sm:px-6"
+              className="btn-secondary hero-whatsapp-cta min-h-[58px] px-5 text-base font-semibold sm:min-h-[60px] sm:px-6"
             />
           </div>
 
@@ -107,7 +107,7 @@ export function Hero() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:block animate-fade-in">
-        <div className="hero-scroll-cue flex flex-col items-center gap-2 text-text-muted/50">
+        <div className="hero-scroll-cue flex flex-col items-center gap-2 text-text-muted">
           <span className="text-[10px] uppercase tracking-[0.2em]">Scroll</span>
           <div className="h-8 w-px bg-divider" />
         </div>

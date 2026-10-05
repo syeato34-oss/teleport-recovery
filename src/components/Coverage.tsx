@@ -1,5 +1,6 @@
 import { CallLink } from '@/components/CallLink';
 import { MapPinned, Navigation } from 'lucide-react';
+import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
 
 const COVERAGE_IMAGE =
   'https://images.pexels.com/photos/24343234/pexels-photo-24343234.jpeg?auto=compress&cs=tinysrgb';
@@ -67,10 +68,11 @@ export function Coverage() {
               whether to proceed.
             </p>
 
-            <div className="mt-8">
-              <CallLink location="coverage" className="btn-primary">
+            <div className="mt-8 flex flex-wrap gap-3">
+              <CallLink location="coverage" className="btn-primary w-full sm:w-auto">
                 Call to Check Availability
               </CallLink>
+              <WhatsAppLocationButton location="coverage_location" className="w-full sm:w-auto" />
             </div>
           </div>
         </div>

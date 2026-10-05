@@ -14,6 +14,10 @@ const results = { viewports: [], routes: [], interactions: [], pageErrors: [], c
 const context = await browser.newContext();
 await context.addInitScript(() => {
   window.dataLayer = [];
+  window.qaGpsCalls = 0;
+  Object.defineProperty(navigator, 'geolocation', { configurable: true, value: {
+    getCurrentPosition() { window.qaGpsCalls += 1; },
+  } });
   window.qaCspViolations = [];
   document.addEventListener('securitypolicyviolation', (event) => {
     window.qaCspViolations.push({ directive: event.violatedDirective, blockedURI: event.blockedURI });
@@ -65,7 +69,7 @@ async function fillCallback() {
 }
 
 try {
-  for (const [width, height] of [[1440, 900], [1180, 750], [768, 1024], [390, 844]]) {
+  for (const [width, height] of [[1440, 900], [1180, 750], [768, 1024], [390, 844], [320, 844]]) {
     await page.setViewportSize({ width, height });
     const response = await visit();
     assert.equal(response.status(), 200);
@@ -74,10 +78,22 @@ try {
     const text = await page.locator('body').innerText();
     assert.ok(text.includes('45 MIN AVERAGE ETA*'));
     assert.ok(text.includes('01234 900 700'));
-    assert.equal(await page.locator('a[href*="wa.me"], a[href^="mailto:"]').count(), 0);
+    assert.equal(await page.locator('a[href^="mailto:"]').count(), 0);
+    for (const href of await page.locator('a[href*="wa.me"]').evaluateAll((links) => links.map((link) => link.href))) {
+      const url = new URL(href);
+      assert.equal(url.origin + url.pathname, 'https://wa.me/447827079669');
+      assert.ok(url.searchParams.get('text').includes('Pickup:\n\nDestination:'));
+      assert.ok(!url.searchParams.get('text').includes('google.com'));
+    }
+    assert.equal(await page.locator('#callback form:not([inert])').count(), 1);
+    assert.equal(await page.locator('#contact form').count(), 0);
+    assert.deepEqual(await page.locator('main > section[id]').evaluateAll((sections) => sections.map((section) => section.id)),
+      ['top', 'coverage', 'services', 'how-it-works', 'trust', 'callback', 'faqs', 'contact']);
     await page.screenshot({ path: resolve(artifacts, `home-${width}x${height}.png`), fullPage: true });
-    await page.locator('#contact').scrollIntoViewIfNeeded();
-    await page.screenshot({ path: resolve(artifacts, `contact-${width}x${height}.png`) });
+    for (const section of ['coverage', 'callback', 'faqs', 'contact']) {
+      await page.locator(`#${section}`).scrollIntoViewIfNeeded();
+      await page.screenshot({ path: resolve(artifacts, `${section}-${width}x${height}.png`) });
+    }
     results.viewports.push({ width, height, ...metrics });
   }
 
@@ -146,6 +162,77 @@ try {
   assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), 'auto');
   results.interactions.push('Reduced motion removes hero motion and smooth scrolling');
 
+  for (const [selector, source] of [['#top a[href*="wa.me"]', 'hero'], ['div.fixed.inset-x-0.bottom-0 a[href*="wa.me"]', 'sticky_mobile'], ['#contact a[href*="wa.me"]', 'final_cta']]) {
+    const link = page.locator(selector);
+    assert.equal(await link.getAttribute('target'), null, 'General WhatsApp uses the same tab');
+    await link.evaluate((element) => element.addEventListener('click', (event) => event.preventDefault(), { once: true }));
+    await link.click();
+    assert.deepEqual(await page.evaluate(() => window.dataLayer.at(-1)), { event: 'whatsapp_click', location: source });
+    assert.equal(await page.evaluate(() => window.qaGpsCalls), 0, 'General WhatsApp must never request GPS');
+  }
+  results.interactions.push('Hero, sticky and final WhatsApp: canonical same-tab drafts, no GPS, source-only events');
+
+  for (const scenario of ['success', 'denied', 'unavailable', 'timeout', 'unsupported', 'coarse', 'deadline', 'duplicate']) {
+    const gpsContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    let snapshot;
+    await gpsContext.exposeBinding('qaCapture', (_source, value) => { snapshot = value; });
+    await gpsContext.addInitScript((scenario) => {
+      window.dataLayer = [];
+      window.qaGps = { calls: 0, options: null };
+      const capture = () => window.qaCapture({ gps: window.qaGps, events: window.dataLayer,
+        local: { ...localStorage }, session: { ...sessionStorage } });
+      const geolocation = {
+        getCurrentPosition(success, failure, options) {
+          window.qaGps.calls += 1;
+          window.qaGps.options = options;
+          capture();
+          if (scenario === 'deadline') return;
+          setTimeout(() => {
+            if (['denied', 'unavailable', 'timeout'].includes(scenario)) {
+              failure({ code: { denied: 1, unavailable: 2, timeout: 3 }[scenario] });
+            } else {
+              success({ coords: { latitude: 52.123456, longitude: -0.56789, accuracy: scenario === 'coarse' ? 100000 : 20 } });
+            }
+          }, 80);
+        },
+      };
+      Object.defineProperty(navigator, 'geolocation', { configurable: true, get() {
+        if (scenario !== 'unsupported') return geolocation;
+        capture();
+        return undefined;
+      } });
+    }, scenario);
+    const gpsPage = await gpsContext.newPage();
+    let handoff;
+    // Intercept the handoff before contacting WhatsApp. No test sends a customer message.
+    await gpsPage.route('https://wa.me/**', async (route) => {
+      handoff = route.request().url();
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<p>Intercepted QA handoff.</p>' });
+    });
+    await gpsPage.goto(origin, { waitUntil: 'networkidle' });
+    assert.equal(await gpsPage.evaluate(() => window.qaGps.calls), 0, 'No GPS on page load');
+    const locationButton = gpsPage.getByRole('button', { name: 'Share My Location on WhatsApp', exact: true });
+    await locationButton.scrollIntoViewIfNeeded();
+    const navigation = gpsPage.waitForURL('https://wa.me/**');
+    if (scenario === 'duplicate') await locationButton.evaluate((button) => { button.click(); button.click(); });
+    else await locationButton.click();
+    await navigation;
+    const url = new URL(handoff);
+    assert.equal(url.origin + url.pathname, 'https://wa.me/447827079669');
+    const message = url.searchParams.get('text');
+    assert.equal(message.includes('https://www.google.com/maps/search/'), ['success', 'duplicate'].includes(scenario));
+    if (['success', 'duplicate'].includes(scenario)) assert.ok(message.includes('query=52.123456%2C-0.56789'));
+    else assert.ok(message.includes('Pickup:\n\nDestination:'));
+    assert.deepEqual([...url.searchParams.keys()], ['text'], 'Draft only; no automatic send parameters');
+    assert.equal(snapshot.gps.calls, scenario === 'unsupported' ? 0 : 1);
+    if (snapshot.gps.calls) assert.deepEqual(snapshot.gps.options, { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 });
+    assert.deepEqual(snapshot.events, [{ event: 'whatsapp_click', location: 'coverage_location' }]);
+    assert.deepEqual(snapshot.local, {});
+    assert.deepEqual(snapshot.session, {});
+    results.interactions.push(`Location ${scenario}: bounded explicit request, same-tab manual draft, no storage or personal tracking data`);
+    await gpsContext.close();
+  }
+
   let acceptedRequests = 0;
   await page.route('**/__forms/callback.html', async (route) => {
     acceptedRequests += 1;
@@ -169,7 +256,7 @@ try {
   await page.locator('form[name="recovery-callback"]:not([inert])').evaluate((form) => { form.requestSubmit(); form.requestSubmit(); });
   await page.getByText('Callback requested', { exact: true }).waitFor();
   assert.equal(acceptedRequests, 1);
-  assert.equal(await page.getByRole('status').evaluate((element) => document.activeElement === element), true);
+  assert.equal(await page.locator('#callback [role="status"]').evaluate((element) => document.activeElement === element), true);
   assert.equal(await page.evaluate(() => window.dataLayer.filter((event) => event.event === 'callback_submit').length), 1);
   results.interactions.push('Callback success: URL encoding, validation, duplicate lock, focus and one accepted event');
   await page.screenshot({ path: resolve(artifacts, 'callback-success.png') });

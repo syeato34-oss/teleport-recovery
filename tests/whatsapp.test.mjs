@@ -11,6 +11,20 @@ const { getWhatsAppDestination, getPickupLocation, buildWhatsAppRecoveryUrl } = 
 // Isolated fixture only. No test contacts WhatsApp or sends a message.
 const destination = 'https://wa.me/447700900123';
 
+test('confirmed customer WhatsApp configuration uses the canonical validated destination', async () => {
+  const config = transformSync(readFileSync('src/config/business.ts', 'utf8'), { loader: 'ts', format: 'esm', target: 'es2020' });
+  const { businessConfig } = await import(`data:text/javascript;base64,${Buffer.from(config.code).toString('base64')}`);
+  assert.equal(getWhatsAppDestination(businessConfig.whatsappHref), 'https://wa.me/447827079669');
+  assert.equal(businessConfig.phoneHref, 'tel:+441234900700');
+});
+
+test('general WhatsApp prepares a concise manually completed draft without a location', () => {
+  const url = new URL(buildWhatsAppRecoveryUrl(destination));
+  assert.equal(url.origin + url.pathname, destination);
+  assert.equal(url.searchParams.get('text'), 'Hi Teleport Recovery, I need vehicle recovery.\n\nPickup:\n\nDestination:\n\nVehicle / reg:\n\nWhat happened:');
+  assert.deepEqual([...url.searchParams.keys()], ['text']);
+});
+
 test('WhatsApp destination accepts official phone links and rejects missing or misleading URLs', () => {
   assert.equal(getWhatsAppDestination(destination), destination);
   assert.equal(getWhatsAppDestination(`${destination}/?text=old-draft`), destination);
@@ -28,7 +42,7 @@ test('successful location produces an encoded reviewable recovery draft with a v
   assert.equal(url.origin + url.pathname, destination);
   const message = url.searchParams.get('text');
   assert.ok(message.startsWith('Hi Teleport Recovery, I need vehicle recovery.\n\nPickup:\n'));
-  assert.ok(message.endsWith('\n\nDestination:\n\nVehicle:\n\nWhat happened:'));
+  assert.ok(message.endsWith('\n\nDestination:\n\nVehicle / reg:\n\nWhat happened:'));
   const maps = new URL(message.split('\n')[3]);
   assert.equal(maps.origin + maps.pathname, 'https://www.google.com/maps/search/');
   assert.equal(maps.searchParams.get('api'), '1');
@@ -39,9 +53,9 @@ test('successful location produces an encoded reviewable recovery draft with a v
 test('missing or invalid coordinates still prepare a useful manual-location message', () => {
   for (const location of [null, { latitude: NaN, longitude: 0 }, { latitude: 91, longitude: 0 }, { latitude: 0, longitude: -181 }]) {
     const message = new URL(buildWhatsAppRecoveryUrl(destination, location)).searchParams.get('text');
-    assert.ok(message.includes('Pickup:\nPlease send your current location in WhatsApp.'));
+    assert.ok(message.includes('Pickup:\n\nDestination:'));
     assert.ok(!message.includes('google.com'));
-    assert.ok(message.includes('Destination:\n\nVehicle:\n\nWhat happened:'));
+    assert.ok(message.includes('Destination:\n\nVehicle / reg:\n\nWhat happened:'));
   }
 });
 

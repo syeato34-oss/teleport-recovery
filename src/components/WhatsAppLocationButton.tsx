@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { trackEvent } from '@/lib/tracking';
@@ -11,6 +11,7 @@ type WhatsAppLocationButtonProps = {
 
 export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLocationButtonProps) {
   const destination = getWhatsAppDestination(businessConfig.whatsappHref);
+  const disclosureId = useId();
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('');
   const [navigationFailed, setNavigationFailed] = useState(false);
@@ -54,7 +55,7 @@ export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLoc
     if (requestId.current !== activeRequest) return;
     setStatus(pickup
       ? 'Opening WhatsApp with your pickup location. Review the message before sending.'
-      : 'Location unavailable. Opening WhatsApp so you can share your location there.');
+      : 'Location unavailable. Opening WhatsApp with a blank pickup field for you to complete.');
     try {
       // Same-tab navigation works after the asynchronous location request without a popup.
       window.location.assign(buildWhatsAppRecoveryUrl(destination, pickup));
@@ -76,10 +77,18 @@ export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLoc
         onClick={handleClick}
         disabled={busy}
         aria-busy={busy}
+        aria-describedby={disclosureId}
       >
         <MessageCircle className="whatsapp-location-icon h-5 w-5 shrink-0 text-accent-light" aria-hidden="true" />
-        <span>{busy ? 'Getting your location…' : 'Send Location on WhatsApp'}</span>
+        <span>{busy ? 'Getting your location…' : 'Share My Location on WhatsApp'}</span>
       </button>
+      <p id={disclosureId} className="basis-full text-xs leading-relaxed text-text-muted">
+        With permission, add a Maps pickup link to a WhatsApp draft. Opening the draft shares
+        the link with WhatsApp. Review and send it yourself, or enter your location manually.{' '}
+        <a href={businessConfig.privacyUrl} className="text-accent-light underline underline-offset-4">
+          Location privacy
+        </a>.
+      </p>
       <span role="status" aria-atomic="true" className={navigationFailed ? 'basis-full text-sm leading-5 text-text-main' : 'sr-only'}>
         {status}
       </span>

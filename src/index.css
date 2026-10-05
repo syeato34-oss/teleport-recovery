@@ -23,8 +23,17 @@
 
 @layer base {
   html {
+    --site-header-height: 4.0625rem;
+    --mobile-call-bar-height: calc(5rem + env(safe-area-inset-bottom));
     scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--site-header-height) + 0.5rem);
+    scroll-padding-bottom: calc(var(--mobile-call-bar-height) + 0.5rem);
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Keyboard focus must arrive in view immediately, even during rapid tabbing. */
+  html:has(:focus-visible) {
+    scroll-behavior: auto;
   }
 
   body {
@@ -33,12 +42,13 @@
   }
 
   section[id] {
-    scroll-margin-top: 5rem;
+    /* The measured header offset is already supplied by html's scroll-padding. */
+    scroll-margin-top: 0.5rem;
   }
 
   @media (min-width: 1024px) {
     section[id] {
-      scroll-margin-top: 6rem;
+      scroll-margin-top: 1rem;
     }
   }
 
@@ -109,6 +119,18 @@
   .divider-line {
     @apply h-px w-full bg-divider;
   }
+}
+
+/* Keep both sticky actions readable when text grows; spacing need not double with it. */
+.mobile-conversion-bar a {
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 14px 12px;
+}
+
+.mobile-conversion-bar a span {
+  max-width: 100%;
+  flex-shrink: 0;
 }
 
 /* Hero motion stays on compositor-friendly transform and opacity properties. */
@@ -527,6 +549,9 @@
   }
 
   .hero-status__item {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
     gap: 0.45rem;
     font-size: 0.75rem;
     line-height: 1.25rem;
@@ -534,7 +559,7 @@
   }
 
   #coverage {
-    scroll-margin-top: 4rem;
+    scroll-margin-top: 0;
   }
 }
 

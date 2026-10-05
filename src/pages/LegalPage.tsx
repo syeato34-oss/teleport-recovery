@@ -211,6 +211,30 @@ function PrivacyNotice() {
         </p>
       </LegalSection>
 
+      <LegalSection title="WhatsApp contact and location sharing">
+        <p>
+          WhatsApp is available as a customer contact channel. The ordinary WhatsApp links open
+          a recovery message draft without requesting your device location. You can enter your
+          pickup location and other recovery details yourself.
+        </p>
+        <p>
+          Selecting &quot;Share My Location on WhatsApp&quot; requests your location using your
+          browser&apos;s permission controls. If a usable location is available, your coordinates
+          are used to create a Google Maps pickup link in the draft.
+        </p>
+        <p>
+          Opening a prepared draft passes its contents, including any Maps link and coordinates,
+          to WhatsApp. Opening the Maps link passes the coordinates to Google. These services
+          process information under their own privacy policies. You review and send the message
+          yourself; this website does not automatically send it. If you send the message, Teleport
+          can use the information to discuss and arrange your recovery.
+        </p>
+        <p>
+          If you decline permission or your location is unavailable, you can share your location
+          manually in WhatsApp instead. Precise location is not sent to website analytics.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Website services and analytics">
         <p>
           This website loads its typeface from Google Fonts. Your browser makes requests to Google
@@ -220,6 +244,13 @@ function PrivacyNotice() {
         <p>
           Recovery images are loaded from Pexels. Your browser also shares technical connection
           information with Pexels when requesting these images.
+        </p>
+        <p>
+          Pexels uses Cloudflare security services. Image requests may set cookies on the
+          pexels.com domain, depending on your browser and the image provider. The cookies observed
+          are <code>__cf_bm</code>, used for bot protection and expiring after approximately
+          30 minutes of inactivity, and <code>_cfuvid</code>, a session cookie used for rate
+          limiting. These support the image host&apos;s security and are not advertising cookies.
         </p>
         <p>
           This version of the website does not install advertising or analytics tags. If analytics
@@ -310,7 +341,7 @@ export function LegalPage({ pathname }: { pathname: LegalPath }) {
           href={businessConfig.phoneHref}
           onClick={() => trackEvent('call_click', { location: 'legal_page_footer' })}
           className="btn-secondary mt-8"
-          aria-label={`Call ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
+          aria-label={`Call ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
         >
           <Phone className="h-4 w-4" aria-hidden="true" />
           Call {businessConfig.phoneDisplay}

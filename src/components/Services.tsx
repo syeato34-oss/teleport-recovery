@@ -35,7 +35,7 @@ export function Services() {
             <p className="text-base font-semibold text-white">Not sure which service you need?</p>
             <p className="mt-1 text-sm text-text-muted">Call us and we'll help figure it out.</p>
           </div>
-          <CallLink location="services" className="btn-primary whitespace-nowrap">
+          <CallLink location="services" className="btn-primary max-w-full">
             <Phone className="h-5 w-5" aria-hidden="true" />
             <span>Call to Discuss</span>
           </CallLink>

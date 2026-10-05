@@ -42,9 +42,9 @@ export function Header() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between lg:h-[72px]">
+        <div className="flex min-h-16 items-center justify-between gap-2 py-2 lg:min-h-[72px]">
           {/* Brand */}
-          <a href="/#top" aria-label={`${businessConfig.tradingName} home`}>
+          <a href="/#top" className="min-w-0" aria-label={`${businessConfig.tradingName} home`}>
             <BrandLogo />
           </a>
 
@@ -58,7 +58,7 @@ export function Header() {
           </nav>
 
           {/* Desktop call button */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden shrink-0 lg:flex items-center gap-3">
             <CallLink location="header" className="btn-primary" aria-label={`Call ${businessConfig.phoneDisplay}`}>
               <Phone className="h-5 w-5" aria-hidden="true" />
               <span>{businessConfig.phoneDisplay}</span>
@@ -66,23 +66,23 @@ export function Header() {
           </div>
 
           {/* Mobile controls */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
             <CallLink location="header"
-              className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-midnight transition-colors hover:bg-accent-light"
+              className="flex h-[44px] w-[44px] items-center justify-center rounded-lg bg-accent text-midnight transition-colors hover:bg-accent-light"
               aria-label={`Call ${businessConfig.phoneDisplay}`}
             >
-              <Phone className="h-5 w-5" aria-hidden="true" />
+              <Phone className="h-[20px] w-[20px]" aria-hidden="true" />
             </CallLink>
             <button
               ref={menuButton}
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
-              className="flex h-11 w-11 items-center justify-center rounded-lg border border-divider text-text-main"
+              className="flex h-[44px] w-[44px] items-center justify-center rounded-lg border border-divider text-text-main"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
             >
-              {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+              {menuOpen ? <X className="h-[20px] w-[20px]" aria-hidden="true" /> : <Menu className="h-[20px] w-[20px]" aria-hidden="true" />}
             </button>
           </div>
         </div>

@@ -10,7 +10,6 @@ export function CallLink({ location, onClick, children, ...props }: CallLinkProp
     <a
       {...props}
       href={businessConfig.phoneHref}
-      aria-label={props['aria-label'] ?? `Call ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
       onClick={(event) => {
         trackEvent('call_click', { location });
         onClick?.(event);

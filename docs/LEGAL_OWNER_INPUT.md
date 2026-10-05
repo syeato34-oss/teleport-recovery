@@ -1,6 +1,6 @@
 # Legal and privacy owner inputs before launch
 
-Reviewed: 3 October 2026.
+Reviewed: 5 October 2026 (targeted compliance patch and confirmed customer WhatsApp activation).
 
 The code adds readable `/terms`, `/guarantee` and `/privacy` pages using confirmed facts. It does not establish full legal compliance. The privacy page explains the implemented website enquiry path, but is not a complete privacy notice until the missing owner information and handling decisions below are supplied and incorporated.
 
@@ -23,6 +23,20 @@ Publish the confirmed identity/contact details in the appropriate website, terms
 5. Establish an owned process for access/correction/deletion and other privacy requests and complaints. Confirm the genuine written contact route and security of identity checks; the public telephone provides a current way to enquire but does not supply a missing proprietor identity or written contact.
 6. Review the existing remote Google Fonts requests and Netlify technical processing. If fonts are self-hosted or the service list changes, update `/privacy` to match. No advertising/analytics tags are installed by this task. Reassess disclosures and any consent requirement before enabling real tracking tools; the event abstraction is not consent management.
 7. Confirm any additional collection outside the website: call recordings, messaging, payment details, or operational records. These were not evidenced in the repository and should not be silently added to the website privacy notice as if already known.
+8. Confirm and record the applicable security-cookie exemption assessment for Pexels/Cloudflare image delivery (`__cf_bm` bot protection and `_cfuvid` rate limiting). The privacy page now describes the observed cookies and durations; it does not claim that the owner's exemption assessment is complete. If the actual use is not exempt, prevent non-exempt storage until consent or remove the external image-host dependency while preserving the approved imagery. This assessment is the remaining owner-dependent part of audit finding 9.
+
+## Deferred tracking gate and activated WhatsApp disclosure (audit findings 11 and 12)
+
+No Google Ads, Analytics or GTM tags are installed. Finding 11 is tracking-stack dependent, not a speculative local implementation task. Before the actual tags are activated:
+
+- Reassess consent requirements against the chosen services, purposes and configuration. Accept / Reject / Manage choices and equally easy consent withdrawal/change must be provided where required.
+- Implement Consent Mode v2 where applicable, with appropriate denied defaults and consent updates. Consent Mode alone does not obtain or retain a user's consent. Assess any pre-consent requests; do not assume cookieless pings are exempt.
+- Update the privacy/cookie information and narrowly review CSP for the actual integrations.
+- Never send precise GPS coordinates, callback names, phone numbers or enquiry contents to analytics.
+
+The owner has confirmed customer WhatsApp **07827 079669** (`https://wa.me/447827079669`), configured once in `src/config/business.ts`; the public call route remains **01234 900 700**. General WhatsApp actions open a manually sent recovery draft without requesting GPS. Only the explicit coverage location action requests browser location permission and adds a usable Maps pickup link; otherwise Pickup stays blank for manual entry. The contextual notice and `/privacy` explain that opening the draft passes its contents to WhatsApp, and opening the Maps link passes coordinates to Google. Teleport's website does not automatically send the message or persist coordinates, and tracking carries only the action's UI source.
+
+Finding 12's local implementation/disclosure is complete. The owner must still confirm the business's WhatsApp account access, recipients/handling, lawful basis, retention and any overseas-transfer arrangements as part of completing the privacy notice. No retention period or legal controller identity has been invented.
 
 ## Booking and consumer information
 

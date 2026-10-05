@@ -3,9 +3,9 @@ import { Phone, Send, CheckCircle2 } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { CALLBACK_FORM_NAME, isCallbackPhoneValid, submitCallback } from '@/lib/callback';
 import { trackEvent } from '@/lib/tracking';
-import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
+import { WhatsAppLink } from '@/components/WhatsAppLink';
 
-export function ContactSection() {
+export function CallbackSection() {
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -40,7 +40,7 @@ export function ContactSection() {
     try {
       await submitCallback(formData);
       setSubmitted(true);
-      trackEvent('callback_submit', { location: 'contact' });
+      trackEvent('callback_submit', { location: 'callback' });
     } catch {
       // A timeout may occur after the server receives a request: never claim it
       // definitely failed to arrive or report success without confirmation.
@@ -52,56 +52,20 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative bg-midnight-2 py-20 lg:py-28 overflow-hidden">
+    <section id="callback" className="relative bg-midnight py-16 lg:py-20 overflow-hidden">
       {/* Decorative gradient accent */}
       <div
         className="absolute -top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-accent/5 blur-3xl"
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-          {/* Left: Call to action */}
-          <div>
-            <span className="section-label">Get Help Now</span>
-            <h2 className="heading-lg mt-3 text-white">Let’s arrange your recovery.</h2>
-            <p className="mt-4 body-lg">
-              Call with your pickup location and destination — we’ll confirm the price and ETA.
-            </p>
-
-            {/* Phone CTA */}
-            <div className="mt-8 space-y-3">
-              <a
-                href={businessConfig.phoneHref}
-                aria-label={`Call ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
-                onClick={() => trackEvent('call_click', { location: 'contact' })}
-                className="btn-primary w-full justify-start rounded-xl px-5 py-5 sm:px-6"
-              >
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-midnight/10 text-midnight">
-                    <Phone className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-xs uppercase tracking-[0.15em] text-midnight/80">Call now</span>
-                    <span className="block whitespace-nowrap text-[clamp(1.5rem,6.5vw,2.25rem)] font-extrabold leading-tight tracking-tight text-midnight sm:text-4xl xl:text-[2.75rem]">
-                      {businessConfig.phoneDisplay}
-                    </span>
-                  </span>
-                </span>
-              </a>
-              <WhatsAppLocationButton
-                location="contact"
-                className="min-h-[58px] w-full rounded-xl px-5 text-base font-semibold"
-              />
-            </div>
-          </div>
-
-          {/* Right: Callback form */}
+      <div className="relative mx-auto max-w-2xl px-4 sm:px-6">
           <div className="rounded-2xl border border-divider bg-panel/40 p-6 sm:p-8">
             <div className="mb-6">
-              <h3 id="callback-title" className="text-xl font-semibold text-white">Prefer a callback?</h3>
+              <h2 id="callback-title" className="text-xl font-semibold text-white">Prefer a callback?</h2>
               <p className="mt-1.5 text-sm text-text-muted">
-                Leave your details and we'll call you back to discuss your situation.
+                Leave your details and we'll call you back to discuss your situation. For immediate
+                help, call or WhatsApp us directly.
               </p>
             </div>
 
@@ -115,7 +79,7 @@ export function ContactSection() {
                 </p>
                 <a
                   href={businessConfig.phoneHref}
-                  aria-label={`Call ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
+                  aria-label={`Call Instead — ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
                   onClick={() => trackEvent('call_click', { location: 'callback_success' })}
                   className="btn-primary mt-6"
                 >
@@ -142,7 +106,7 @@ export function ContactSection() {
                     <input type="text" name="bot-field" tabIndex={-1} autoComplete="off" />
                   </label>
                 </div>
-                <fieldset disabled={busy} aria-label="Callback request details" className="min-w-0 space-y-4">
+                <fieldset disabled={busy} aria-label="Callback request details" className="grid min-w-0 gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="cb-name" className="block text-sm font-medium text-text-muted mb-1.5">
                       Your name
@@ -155,7 +119,7 @@ export function ContactSection() {
                       maxLength={100}
                       autoComplete="name"
                       onInput={(event) => event.currentTarget.setCustomValidity('')}
-                      className="w-full rounded-lg border border-divider bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
+                      className="w-full rounded-lg border border-accent/70 bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
                       placeholder="Jane Smith"
                     />
                   </div>
@@ -174,14 +138,14 @@ export function ContactSection() {
                       inputMode="tel"
                       aria-describedby="cb-phone-hint"
                       onInput={(event) => event.currentTarget.setCustomValidity('')}
-                      className="w-full rounded-lg border border-divider bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
+                      className="w-full rounded-lg border border-accent/70 bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
                       placeholder="Your callback number"
                     />
                     <p id="cb-phone-hint" className="mt-1.5 text-xs text-text-muted">
                       Include the country code if you're outside the UK.
                     </p>
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label htmlFor="cb-location" className="block text-sm font-medium text-text-muted mb-1.5">
                       Your location <span className="text-text-muted/80">(optional)</span>
                     </label>
@@ -190,11 +154,11 @@ export function ContactSection() {
                       name="location"
                       type="text"
                       maxLength={200}
-                      className="w-full rounded-lg border border-divider bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
+                      className="w-full rounded-lg border border-accent/70 bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50"
                       placeholder="Postcode or nearby landmark"
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label htmlFor="cb-message" className="block text-sm font-medium text-text-muted mb-1.5">
                       What happened? <span className="text-text-muted/80">(optional)</span>
                     </label>
@@ -203,11 +167,12 @@ export function ContactSection() {
                       name="details"
                       rows={3}
                       maxLength={2000}
-                      className="w-full rounded-lg border border-divider bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50 resize-none"
+                      onFocus={(event) => event.currentTarget.parentElement?.scrollIntoView({ block: 'nearest', behavior: 'instant' })}
+                      className="w-full rounded-lg border border-accent/70 bg-midnight-2 px-4 py-3 text-sm text-white placeholder:text-text-muted/70 focus:border-accent/50 resize-none"
                       placeholder="Brief description of the situation"
                     />
                   </div>
-                  <button type="submit" disabled={busy} className="btn-secondary w-full disabled:cursor-wait disabled:opacity-70">
+                  <button type="submit" disabled={busy} className="btn-secondary w-full sm:col-span-2 disabled:cursor-wait disabled:opacity-70">
                     <Send className="h-4 w-4" aria-hidden="true" />
                     {busy ? 'Sending callback request…' : 'Request Callback'}
                   </button>
@@ -232,6 +197,49 @@ export function ContactSection() {
                 </p>
               </form>
             )}
+          </div>
+      </div>
+    </section>
+  );
+}
+
+/** Final call-first action after objections have been answered; the form lives above FAQ. */
+export function ContactSection() {
+  return (
+    <section id="contact" className="relative bg-midnight-2 py-20 lg:py-28 overflow-hidden">
+      <div
+        className="absolute -top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-accent/5 blur-3xl"
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <span className="section-label">Get Help Now</span>
+            <h2 className="heading-lg mt-3 text-white">Let’s arrange your recovery.</h2>
+            <p className="mt-4 body-lg">
+              Call or WhatsApp with your pickup location and destination — we’ll confirm the price and ETA.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <a
+              href={businessConfig.phoneHref}
+              aria-label={`Call now ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
+              onClick={() => trackEvent('call_click', { location: 'final_cta' })}
+              className="btn-primary w-full justify-start rounded-xl px-5 py-5 sm:px-6"
+            >
+              <span className="flex min-w-0 items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-midnight/10 text-midnight">
+                  <Phone className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs uppercase tracking-[0.15em] text-midnight/80">Call now</span>
+                  <span className="block text-[clamp(1.5rem,6.5vw,2.25rem)] font-extrabold leading-tight tracking-tight text-midnight sm:text-4xl xl:text-[2.75rem]">
+                    {businessConfig.phoneDisplay}
+                  </span>
+                </span>
+              </span>
+            </a>
+            <WhatsAppLink location="final_cta" className="btn-secondary min-h-[58px] w-full rounded-xl px-5 text-base font-semibold" />
           </div>
         </div>
       </div>

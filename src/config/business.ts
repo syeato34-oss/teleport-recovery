@@ -9,8 +9,9 @@ export const businessConfig = {
   phoneDisplay,
   phoneTel,
   phoneHref: `tel:${phoneTel}`,
-  // Set only an owner-confirmed WhatsApp destination; null keeps the CTA hidden.
-  whatsappHref: null as string | null,
+  // Owner-confirmed customer messaging destination; independent of the public call route.
+  // null still disables WhatsApp if this channel is withdrawn.
+  whatsappHref: 'https://wa.me/447827079669' as string | null,
   websiteUrl: 'https://teleportrecovery.co.uk',
   averageEtaMinutes: 45,
   averageEtaQualifier:
@@ -19,7 +20,7 @@ export const businessConfig = {
   termsUrl: '/terms',
   guaranteeUrl: '/guarantee',
   privacyUrl: '/privacy',
-  // No confirmed email, WhatsApp destination or legal identity is available.
+  // No confirmed email or legal identity is available.
   // Required owner inputs are documented in docs/LEGAL_OWNER_INPUT.md.
   metaTitle: `${tradingName} | UK Vehicle Recovery`,
   metaDescription:

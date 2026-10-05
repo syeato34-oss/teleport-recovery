@@ -6,7 +6,7 @@ import { Services } from '@/components/Services';
 import { HowItWorks } from '@/components/HowItWorks';
 import { Trust } from '@/components/Trust';
 import { FAQs } from '@/components/FAQs';
-import { ContactSection } from '@/components/ContactSection';
+import { CallbackSection, ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
 import { MobileCallBar } from '@/components/MobileCallBar';
 import { LegalPage, type LegalPath } from '@/pages/LegalPage';
@@ -30,6 +30,7 @@ function App() {
             <Services />
             <HowItWorks />
             <Trust />
+            <CallbackSection />
             <FAQs />
             <ContactSection />
           </>
@@ -42,7 +43,7 @@ function App() {
       <Footer />
       <MobileCallBar />
       {/* Spacer so the fixed mobile call bar doesn't cover footer content */}
-      <div className="h-[calc(5rem+env(safe-area-inset-bottom))] lg:hidden" aria-hidden="true" />
+      <div className="h-[var(--mobile-call-bar-height)] lg:hidden" aria-hidden="true" />
     </div>
   );
 }
