@@ -5,9 +5,14 @@ import { transformSync } from 'esbuild';
 
 const moduleUrl = (source) => `data:text/javascript;base64,${Buffer.from(transformSync(source, { loader: 'ts', format: 'esm' }).code).toString('base64')}`;
 const businessUrl = moduleUrl(readFileSync('src/config/business.ts', 'utf8'));
-const source = readFileSync('src/lib/advertisingConsent.ts', 'utf8').replace("from '../config/business'", `from '${businessUrl}'`);
+const phoneUrl = moduleUrl(readFileSync('src/lib/phoneNumber.ts', 'utf8').replace("from '../config/business'", `from '${businessUrl}'`));
+const phone = await import(phoneUrl);
+const source = readFileSync('src/lib/advertisingConsent.ts', 'utf8')
+  .replace("from '../config/business'", `from '${businessUrl}'`)
+  .replace("from './phoneNumber'", `from '${phoneUrl}'`);
 let sequence = 0;
 async function environment(t, initial, readOnly = false) {
+  phone.resetPhoneNumber();
   const values = new Map(initial ? [['teleport-advertising-consent', JSON.stringify(initial)]] : []);
   const scripts = [], cookies = [], events = new Map();
   let reloads = 0;
@@ -108,4 +113,17 @@ test('static HTML has no eager Google tag and CSP does not weaken script executi
   assert.doesNotMatch(scriptPolicy, /unsafe-inline|unsafe-eval|\*/);
   assert.match(scriptPolicy, /www\.gstatic\.com\/wcm\//);
   assert.match(scriptPolicy, /www\.googletagmanager\.com/);
+});
+
+test('Google callback changes display and dial link together only while consent is valid', async (t) => {
+  const { consent } = await environment(t);
+  consent.saveAdvertisingChoice('accepted');
+  const config = window.dataLayer.find((command) => command[0] === 'config' && command[1] === consent.WEBSITE_CALL_ID)[2];
+  // Reserved fictional UK number: simulation only, never dialled or sent to Google.
+  config.phone_conversion_callback('07700 900123', '+447700900123');
+  assert.deepEqual(phone.getPhoneNumber(), { display: '07700 900123', href: 'tel:+447700900123' });
+  consent.saveAdvertisingChoice('rejected');
+  assert.equal(phone.getPhoneNumber().href, 'tel:+441234900700');
+  config.phone_conversion_callback('07700 900123', '+447700900123');
+  assert.equal(phone.getPhoneNumber().href, 'tel:+441234900700', 'Late callback cannot restore forwarding after withdrawal');
 });

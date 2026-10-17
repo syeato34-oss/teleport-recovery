@@ -1,4 +1,5 @@
 import { businessConfig } from '../config/business';
+import { applyGooglePhoneNumber, resetPhoneNumber } from './phoneNumber';
 
 export const CONSENT_STORAGE_KEY = 'teleport-advertising-consent';
 export const CONSENT_VERSION = 1;
@@ -63,7 +64,13 @@ function loadAdvertising(): void {
   gtag('set', { allow_ad_personalization_signals: false, allow_google_signals: false, ads_data_redaction: true });
   gtag('js', new Date());
   gtag('config', GOOGLE_ADS_ID, { allow_ad_personalization_signals: false, allow_google_signals: false });
-  gtag('config', WEBSITE_CALL_ID, { phone_conversion_number: businessConfig.phoneDisplay });
+  gtag('config', WEBSITE_CALL_ID, {
+    phone_conversion_number: businessConfig.phoneDisplay,
+    phone_conversion_callback: (formatted: unknown, dialable: unknown) => {
+      if (getAdvertisingChoice() === 'accepted') applyGooglePhoneNumber(formatted, dialable);
+      else resetPhoneNumber();
+    },
+  });
   const script = document.createElement('script');
   script.id = 'teleport-google-ads';
   script.async = true;
@@ -94,6 +101,7 @@ function applyConsent(next: ConsentRecord | null): void {
     // Avoid the browser's 32-bit timeout overflow for a six-month preference.
     expiryTimer = setTimeout(() => applyConsent(readConsent()), Math.min(CONSENT_LIFETIME_MS - (Date.now() - record!.updatedAt), 2_147_483_647));
   } else {
+    resetPhoneNumber();
     clearAdvertisingCookies();
     if (wasLoaded) {
       (window as GoogleWindow).gtag?.('consent', 'update', denied);

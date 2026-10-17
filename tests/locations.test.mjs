@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { transformSync } from 'esbuild';
+import canonicalBirmingham from '../netlify/edge-functions/canonical-birmingham.js';
 
 function moduleUrl(source) {
   const { code } = transformSync(source, { loader: 'ts', format: 'esm', target: 'es2020' });
@@ -92,4 +93,39 @@ test('each published city has an explicit Netlify HTML rewrite and canonical ind
   assert.deepEqual(redirects.filter((rule) => rule.from?.startsWith('/recovery/') && rule.status === 200)
     .map((rule) => rule.from).sort(), locationPages.map(getLocationPath).sort());
   assert.ok(!redirects.some((rule) => rule.from === '/*' && rule.status === 200));
+});
+
+test('Birmingham slash redirects are permanent, query-preserving and cannot loop', () => {
+  for (const method of ['GET', 'HEAD']) {
+    for (const inputPath of ['/recovery/birmingham/', '/birmingham', '/birmingham/']) {
+      for (const query of ['', '?gclid=route-test&gbraid=braid-test&wbraid=web-test&utm_source=google&utm_campaign=Birmingham', '?note=a%2Bb&term=car+recovery&key=one&key=two&empty=']) {
+        const input = `https://teleportrecovery.co.uk${inputPath}${query}`;
+        const response = canonicalBirmingham(new Request(input, { method }));
+        assert.equal(response.status, 301);
+        const destination = response.headers.get('location');
+        assert.equal(destination, `https://teleportrecovery.co.uk/recovery/birmingham${query}`);
+        assert.equal(canonicalBirmingham(new Request(destination, { method })), undefined);
+        assert.equal(getLocationPage(new URL(destination).pathname), locationPages[0]);
+      }
+    }
+  }
+});
+
+test('slash canonicalisation does not intercept home, legal, callback or unknown routes', () => {
+  for (const path of ['/', '/terms', '/terms/', '/guarantee/', '/privacy/', '/__forms/callback.html',
+    '/recovery/unknown/', '/recovery/birmingham/extra/', '/recovery/birmingham/index.html']) {
+    assert.equal(canonicalBirmingham(new Request(`https://teleportrecovery.co.uk${path}`)), undefined);
+  }
+  assert.equal(canonicalBirmingham(new Request('https://teleportrecovery.co.uk/recovery/birmingham/', { method: 'POST' })), undefined);
+});
+
+test('Netlify declares the canonical handler only for Birmingham and keeps callback Pretty URLs disabled', () => {
+  const config = readFileSync('netlify.toml', 'utf8');
+  const declaration = config.match(/\[\[edge_functions\]\]([\s\S]*?)(?=\[\[|$)/)?.[1];
+  assert.match(declaration, /function\s*=\s*"canonical-birmingham"/);
+  const pattern = new RegExp(declaration.match(/pattern\s*=\s*"([^"]+)"/)[1]);
+  for (const path of ['/recovery/birmingham', '/recovery/birmingham/', '/birmingham', '/birmingham/']) assert.ok(pattern.test(path));
+  for (const path of ['/', '/terms', '/__forms/callback.html', '/recovery/unknown/', '/recovery/birmingham/extra']) assert.ok(!pattern.test(path));
+  assert.match(config, /\[build\.processing\.html\]\s+pretty_urls\s*=\s*false/);
+  assert.ok(!/from\s*=\s*"\/recovery\/birmingham\/"/.test(config), 'A regular slash-only rule could loop after Netlify normalization');
 });

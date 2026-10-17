@@ -1,3 +1,4 @@
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Phone, Send, CheckCircle2 } from 'lucide-react';
 import { businessConfig } from '@/config/business';
@@ -77,15 +78,13 @@ export function CallbackSection() {
                   We've received your details and will call you back to discuss your recovery request.
                   For immediate help, please call us directly.
                 </p>
-                <a
-                  href={businessConfig.phoneHref}
+                <CallLink location="callback_success"
                   aria-label={`Call Instead — ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
-                  onClick={() => trackEvent('call_click', { location: 'callback_success' })}
                   className="btn-primary mt-6"
                 >
                   <Phone className="h-5 w-5" aria-hidden="true" />
                   Call Instead
-                </a>
+                </CallLink>
               </div>
             ) : (
               <form
@@ -180,13 +179,11 @@ export function CallbackSection() {
                 {failed && (
                   <p ref={errorRef} tabIndex={-1} role="alert" className="rounded-lg border border-accent/30 bg-midnight-2 p-3 text-sm text-text-main">
                     We couldn't confirm your callback request. Please{' '}
-                    <a
-                      href={businessConfig.phoneHref}
-                      onClick={() => trackEvent('call_click', { location: 'callback_failure' })}
+                    <CallLink location="callback_failure"
                       className="text-accent-light underline underline-offset-4"
                     >
-                      call {businessConfig.phoneDisplay}
-                    </a>{' '}
+                      call <PhoneNumber />
+                    </CallLink>{' '}
                     for immediate help, or try again.
                   </p>
                 )}
@@ -221,10 +218,8 @@ export function ContactSection() {
             </p>
           </div>
           <div className="space-y-3">
-            <a
-              href={businessConfig.phoneHref}
+            <CallLink location="final_cta"
               aria-label={`Call now ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
-              onClick={() => trackEvent('call_click', { location: 'final_cta' })}
               className="btn-primary w-full justify-start rounded-xl px-5 py-5 sm:px-6"
             >
               <span className="flex min-w-0 items-center gap-3">
@@ -234,11 +229,11 @@ export function ContactSection() {
                 <span className="min-w-0">
                   <span className="block text-xs uppercase tracking-[0.15em] text-midnight/80">Call now</span>
                   <span className="block text-[clamp(1.5rem,6.5vw,2.25rem)] font-extrabold leading-tight tracking-tight text-midnight sm:text-4xl xl:text-[2.75rem]">
-                    {businessConfig.phoneDisplay}
+                    <PhoneNumber />
                   </span>
                 </span>
               </span>
-            </a>
+            </CallLink>
             <WhatsAppLink location="final_cta" className="btn-secondary min-h-[58px] w-full rounded-xl px-5 text-base font-semibold" />
           </div>
         </div>

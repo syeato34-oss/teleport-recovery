@@ -1,4 +1,4 @@
-import { CallLink } from '@/components/CallLink';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { Phone, MapPin } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { HeroAmbientVisual } from '@/components/HeroAmbientVisual';
@@ -74,7 +74,7 @@ export function Hero() {
               aria-label={`Call ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
             >
               <Phone className="hero-call-icon h-[22px] w-[22px]" aria-hidden="true" />
-              <span>Call {businessConfig.phoneDisplay}</span>
+              <span>Call <PhoneNumber /></span>
             </CallLink>
             <WhatsAppLink
               location="hero"

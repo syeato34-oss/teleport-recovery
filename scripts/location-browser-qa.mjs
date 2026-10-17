@@ -48,7 +48,21 @@ async function visit(page, route) {
   await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map((image) => image.decode().catch(() => {}))); });
   return response;
 }
-function normalizeDom(value) { return value.replaceAll(' style=""', ''); }
+async function normalizeDom(page, value) {
+  if (!value.includes('<')) return value;
+  // Shared links can serialize attributes in a different order. Compare every
+  // attribute value and text node, ignoring only order and the prior empty style.
+  return page.evaluate((html) => {
+    const template = document.createElement('template');
+    template.innerHTML = html.replaceAll(' style=""', '');
+    for (const element of template.content.querySelectorAll('*')) {
+      const attributes = [...element.attributes].map(({ name, value }) => [name, value]).sort(([a], [b]) => a.localeCompare(b));
+      for (const { name } of [...element.attributes]) element.removeAttribute(name);
+      for (const [name, value] of attributes) element.setAttribute(name, value);
+    }
+    return template.innerHTML;
+  }, value);
+}
 async function inspectLayout(page, label) {
   const metrics = await page.evaluate(() => ({
     width: innerWidth, documentWidth: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight,
@@ -112,14 +126,14 @@ try {
       canonical: document.querySelector('link[rel="canonical"]').href,
     }));
     const baseline = homeBaseline?.find((item) => item.width === width);
-    if (baseline) for (const key of Object.keys(snapshot)) assert.equal(normalizeDom(snapshot[key]), normalizeDom(baseline[key]), `Homepage changed: ${width} ${key}`);
+    if (baseline) for (const key of Object.keys(snapshot)) assert.equal(await normalizeDom(page, snapshot[key]), await normalizeDom(page, baseline[key]), `Homepage changed: ${width} ${key}`);
     results.homepage.push({ width, comparedToHistoricalBaseline: Boolean(baseline), genericWhatsAppPreserved: true });
 
     assert.equal((await visit(page, path)).status(), 200);
     assert.equal(await page.title(), city.metaTitle);
     assert.equal(await page.locator('meta[name="description"]').getAttribute('content'), city.metaDescription);
     assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://teleportrecovery.co.uk' + path);
-    assert.equal(await page.locator('h1').innerText(), city.heading);
+    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), city.heading);
     assert.equal(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count(), 1);
     for (const href of await page.locator('a[href*="wa.me"]').evaluateAll((links) => links.map((link) => link.href))) {
       const url = new URL(href);
@@ -151,21 +165,51 @@ try {
   }
 
   const page = await newPage({ width: 390, height: 844 });
-  for (const route of ['/', path, `${path}/`, `${path}/index.html`, `${path}?gclid=local-test-only`, '/terms', '/guarantee', '/privacy', '/recovery/bedford', '/recovery/milton-keynes', '/recovery/northampton', `${path}/extra`]) {
+  // A real HTTP check catches redirect behaviour that Vite/filesystem fallback masks.
+  for (const inputPath of [`${path}/`, '/birmingham', '/birmingham/']) {
+    for (const query of ['', '?gclid=local-test-only&gbraid=braid-test&wbraid=web-test&utm_source=google&note=a%2Bb&term=car+recovery&key=one&key=two']) {
+      for (const method of ['get', 'head']) {
+        const redirect = await page.request[method](`${origin}${inputPath}${query}`, { maxRedirects: 0 });
+        assert.equal(redirect.status(), 301);
+        assert.equal(redirect.headers().location, `${origin}${path}${query}`);
+        const canonical = await page.request[method](`${origin}${path}${query}`, { maxRedirects: 0 });
+        assert.equal(canonical.status(), 200);
+        assert.equal(canonical.headers().location, undefined);
+        if (method === 'get') {
+          const html = await canonical.text();
+          assert.ok(html.includes(`<link rel="canonical" href="https://teleportrecovery.co.uk${path}"`));
+          assert.ok(html.includes(`<title>${city.metaTitle}</title>`));
+        }
+      }
+    }
+  }
+  const sitemap = await (await page.request.get(`${origin}/sitemap.xml`)).text();
+  assert.ok(sitemap.includes(`<loc>https://teleportrecovery.co.uk${path}</loc>`));
+  assert.ok(!sitemap.includes(`<loc>https://teleportrecovery.co.uk${path}/</loc>`));
+  for (const route of ['/', path, `${path}/`, '/birmingham', '/birmingham/', `${path}/index.html`, `${path}?gclid=local-test-only`, '/terms', '/guarantee', '/privacy', '/recovery/bedford', '/recovery/milton-keynes', '/recovery/northampton', `${path}/extra`]) {
     const response = await visit(page, route);
     const expected = /bedford|milton-keynes|northampton|\/extra/.test(route) ? 404 : 200;
     assert.equal(response.status(), expected, route);
     if (route.startsWith(path) && expected === 200) {
-      assert.equal(await page.locator('h1').innerText(), city.heading);
+      assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), city.heading);
+      assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://teleportrecovery.co.uk' + path);
+      if (route === `${path}/`) assert.equal(page.url(), origin + path);
       assert.equal((await page.reload({ waitUntil: 'networkidle' })).status(), 200);
     }
     results.routes.push({ route, status: response.status() });
   }
+  const query = '?gclid=local-test-only&utm_source=google&note=a%2Bb&term=car+recovery&key=one&key=two';
+  await visit(page, `${path}/${query}`);
+  assert.equal(page.url(), `${origin}${path}${query}`);
+  assert.equal((await page.reload({ waitUntil: 'networkidle' })).status(), 200);
+  assert.equal(page.url(), `${origin}${path}${query}`);
+  assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), city.heading);
+  results.interactions.push('Slash GET/HEAD: HTTP 301 to slash-free canonical, raw query preserved, no loop, direct/refresh renders city');
   await visit(page, path);
   await page.getByRole('link', { name: 'Read eligibility, exclusions and refund details' }).click();
   await page.waitForURL('**/guarantee');
   await page.goBack({ waitUntil: 'networkidle' });
-  assert.equal(await page.locator('h1').innerText(), city.heading);
+  assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), city.heading);
   await page.goForward({ waitUntil: 'networkidle' });
   assert.equal(await page.locator('h1').innerText(), 'Money-Back Guarantee');
   results.interactions.push('Guarantee navigation and browser back/forward');

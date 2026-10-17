@@ -1,6 +1,5 @@
 import { Phone } from 'lucide-react';
-import { businessConfig } from '@/config/business';
-import { CallLink } from '@/components/CallLink';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 
 export function NotFoundPage() {
   return (
@@ -12,7 +11,7 @@ export function NotFoundPage() {
         <a href="/" className="btn-secondary">Back to recovery services</a>
         <CallLink location="not_found" className="btn-primary">
           <Phone className="h-5 w-5" aria-hidden="true" />
-          Call {businessConfig.phoneDisplay}
+          Call <PhoneNumber />
         </CallLink>
       </div>
     </section>

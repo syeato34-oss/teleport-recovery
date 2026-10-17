@@ -1,4 +1,4 @@
-import { CallLink } from '@/components/CallLink';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { Phone } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { BrandLogo } from '@/components/BrandLogo';
@@ -27,7 +27,7 @@ export function Footer() {
                   className="flex items-center gap-2.5 text-sm text-text-muted hover:text-white transition-colors"
                 >
                   <Phone className="h-4 w-4 text-accent" aria-hidden="true" />
-                  {businessConfig.phoneDisplay}
+                  <PhoneNumber />
                 </CallLink>
               </li>
             </ul>

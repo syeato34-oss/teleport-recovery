@@ -1,24 +1,66 @@
 import { useId, useState } from 'react';
-import { ChevronDown, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { Check, ChevronDown, Clock3, MapPin, Phone, ShieldCheck } from 'lucide-react';
 import { businessConfig } from '@/config/business';
-import type { LocationPageConfig } from '@/config/locations';
-import { CallLink } from '@/components/CallLink';
+import { getLocationEta, type LocationPageConfig } from '@/config/locations';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { WhatsAppLink } from '@/components/WhatsAppLink';
 import { CallbackSection } from '@/components/ContactSection';
 
 const recoveryImage = 'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb';
 
 function LocationActions({ page, placement }: { page: LocationPageConfig; placement: 'hero' | 'final_cta' }) {
+  const hero = placement === 'hero';
   return (
-    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <CallLink location={`${page.slug}_${placement}`} className="btn-primary hero-call-cta min-h-[58px] text-lg font-bold">
+    <div className={hero ? 'location-hero__actions' : 'mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap'}>
+      <CallLink location={`${page.slug}_${placement}`} className={`btn-primary hero-call-cta min-h-[58px] text-lg font-bold${hero ? ' location-hero__call' : ''}`}>
         <Phone className="h-5 w-5 shrink-0" aria-hidden="true" />
-        <span className="min-w-0 break-words">Call {businessConfig.phoneDisplay}</span>
+        <span className="min-w-0 break-words">{hero ? 'Call Now — ' : 'Call '}<PhoneNumber /></span>
       </CallLink>
-      <WhatsAppLink location={`${page.slug}_${placement}`} message={page.whatsappMessage} className="btn-secondary min-h-[58px] text-base font-semibold">
+      <WhatsAppLink location={`${page.slug}_${placement}`} message={page.whatsappMessage} className={`btn-secondary min-h-[58px] text-base font-semibold${hero ? ' location-hero__whatsapp' : ''}`}>
         WhatsApp for a Quote
       </WhatsAppLink>
     </div>
+  );
+}
+
+function LocationHero({ page }: { page: LocationPageConfig }) {
+  const highlight = page.headingHighlight && page.heading.endsWith(page.headingHighlight) ? page.headingHighlight : undefined;
+  const eta = getLocationEta(page);
+  return (
+    <section className="location-hero relative overflow-hidden bg-midnight" aria-labelledby="location-hero-heading">
+      <div className="absolute inset-0" aria-hidden="true">
+        <img src={`${recoveryImage}&w=1920`} srcSet={`${recoveryImage}&w=900 900w, ${recoveryImage}&w=1920 1920w`} sizes="100vw" alt="" className="location-hero__image h-full w-full object-cover" fetchPriority="high" decoding="async" />
+        <div className="location-hero__shade absolute inset-0" />
+      </div>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="location-hero__content">
+          <div className="location-hero__identifier">
+            <p className="location-hero__city"><MapPin className="h-5 w-5 shrink-0" aria-hidden="true" />{page.city}</p>
+            <p className="location-hero__service">{page.label}</p>
+          </div>
+          <h1 id="location-hero-heading" className="location-hero__heading">
+            {highlight ? <><span>{page.heading.slice(0, -highlight.length).trim()}</span>{' '}<span className="location-hero__highlight">{highlight}</span></> : page.heading}
+          </h1>
+          <p className="location-hero__summary">{page.summary}</p>
+          <LocationActions page={page} placement="hero" />
+          <ul className="location-hero__trust" aria-label="Booking reassurance">
+            {page.trust.map((feature, index) => (
+              <li key={feature}>
+                <span className={`location-hero__check location-hero__check--${index + 1}`} aria-hidden="true"><Check className="h-3.5 w-3.5" strokeWidth={2.5} /></span>
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+          {eta && (
+            <div className="location-hero__eta">
+              <Clock3 className="h-5 w-5 shrink-0 text-accent-light" aria-hidden="true" />
+              <span aria-describedby="location-hero-eta-note">{eta.minutes} MIN ETA*</span>
+              <small id="location-hero-eta-note">*{eta.qualification}</small>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -93,32 +135,7 @@ function LocationFAQs({ page }: { page: LocationPageConfig }) {
 export function LocationPage({ page }: { page: LocationPageConfig }) {
   return (
     <>
-      <section className="relative overflow-hidden bg-midnight pb-12 pt-24 sm:pt-28 lg:py-32">
-        <div className="absolute inset-0" aria-hidden="true">
-          <img
-            src={`${recoveryImage}&w=1920`}
-            srcSet={`${recoveryImage}&w=900 900w, ${recoveryImage}&w=1920 1920w`}
-            sizes="100vw"
-            alt=""
-            className="h-full w-full object-cover object-center"
-            fetchPriority="high"
-            decoding="async"
-          />
-          <div className="hero-image-shade absolute inset-0" />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="section-label">
-              <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {page.label}
-            </p>
-            <h1 className="heading-xl mt-4 break-words text-white">{page.heading}</h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-text-muted sm:text-lg">{page.summary}</p>
-            <LocationActions page={page} placement="hero" />
-            <p className="mt-6 max-w-xl text-sm leading-relaxed text-text-muted">{page.trust.join(' · ')}</p>
-          </div>
-        </div>
-      </section>
+      <LocationHero page={page} />
 
       <section aria-labelledby="location-services-heading" className="bg-midnight-2 py-12 lg:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

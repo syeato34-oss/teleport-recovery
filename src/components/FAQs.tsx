@@ -1,4 +1,4 @@
-import { CallLink } from '@/components/CallLink';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { Fragment, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { faqs } from '@/config/faqs';
@@ -60,7 +60,7 @@ export function FAQs() {
                             location="faq_contact"
                             tabIndex={isOpen ? 0 : -1}
                             className="text-accent-light underline underline-offset-4"
-                          >{businessConfig.phoneDisplay}</CallLink>}
+                          ><PhoneNumber /></CallLink>}
                           {part}
                         </Fragment>
                       ))}

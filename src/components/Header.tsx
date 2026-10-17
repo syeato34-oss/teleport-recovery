@@ -1,4 +1,4 @@
-import { CallLink } from '@/components/CallLink';
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { useEffect, useRef, useState } from 'react';
 import { Phone, Menu, X } from 'lucide-react';
 import { businessConfig } from '@/config/business';
@@ -61,7 +61,7 @@ export function Header() {
           <div className="hidden shrink-0 lg:flex items-center gap-3">
             <CallLink location="header" className="btn-primary" aria-label={`Call ${businessConfig.phoneDisplay}`}>
               <Phone className="h-5 w-5" aria-hidden="true" />
-              <span>{businessConfig.phoneDisplay}</span>
+              <span><PhoneNumber /></span>
             </CallLink>
           </div>
 

@@ -1,3 +1,4 @@
+import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { ArrowLeft, Phone } from 'lucide-react';
 import { businessConfig } from '@/config/business';
@@ -23,14 +24,12 @@ function LegalSection({ title, children, id }: { title: string; children: ReactN
 
 function ContactLink({ location }: { location: string }) {
   return (
-    <a
-      href={businessConfig.phoneHref}
-      onClick={() => trackEvent('call_click', { location })}
+    <CallLink location={location}
       aria-label={`Call ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
       className="font-medium text-accent-light underline decoration-accent/40 underline-offset-4 hover:text-white"
     >
-      {businessConfig.phoneDisplay}
-    </a>
+      <PhoneNumber />
+    </CallLink>
   );
 }
 
@@ -381,15 +380,13 @@ export function LegalPage({ pathname }: { pathname: LegalPath }) {
           {pathname === '/privacy' && <PrivacyNotice />}
         </article>
 
-        <a
-          href={businessConfig.phoneHref}
-          onClick={() => trackEvent('call_click', { location: 'legal_page_footer' })}
+        <CallLink location="legal_page_footer"
           className="btn-secondary mt-8"
           aria-label={`Call ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
         >
           <Phone className="h-4 w-4" aria-hidden="true" />
-          Call {businessConfig.phoneDisplay}
-        </a>
+          Call <PhoneNumber />
+        </CallLink>
       </div>
     </section>
   );

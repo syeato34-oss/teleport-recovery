@@ -4,6 +4,235 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Location pages only: the nationwide hero and shared contact controls stay intact. */
+.location-hero {
+  padding-top: calc(var(--site-header-height) + 1.5rem);
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgb(167 139 250 / 0.16);
+}
+
+.location-hero__image {
+  object-position: 63% center;
+}
+
+.location-hero__shade {
+  background:
+    linear-gradient(0deg, #100b19 0%, rgb(16 11 25 / 0.85) 28%, rgb(16 11 25 / 0.45) 100%),
+    linear-gradient(90deg, rgb(16 11 25 / 0.94), rgb(16 11 25 / 0.67));
+}
+
+.location-hero__content {
+  max-width: 47rem;
+}
+
+.location-hero__city {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c4b5fd;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.location-hero__service {
+  margin-top: 0.5rem;
+  color: #d7d1e0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.location-hero__heading {
+  margin-top: 1.125rem;
+  color: white;
+  font-size: clamp(2rem, 10vw, 2.7rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  overflow-wrap: break-word;
+}
+
+.location-hero__heading > span {
+  display: block;
+}
+
+.location-hero__highlight {
+  margin-top: 0.12em;
+  color: #c4b5fd;
+}
+
+@supports (background-clip: text) {
+  .location-hero__highlight {
+    background: linear-gradient(110deg, #e5dcff, #b69afc 80%);
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.location-hero__summary {
+  max-width: 35rem;
+  margin-top: 1rem;
+  color: #d7d1e0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.location-hero__actions {
+  display: grid;
+  gap: 0.625rem;
+  max-width: 40rem;
+  margin-top: 1.25rem;
+}
+
+.location-hero .location-hero__call {
+  min-height: 3.75rem;
+  padding: 0.875rem 0.75rem;
+  gap: 0.625rem;
+  background: linear-gradient(110deg, #bca2ff, #a78bfa);
+  border: 1px solid rgb(229 220 255 / 0.4);
+  color: #100b19;
+  box-shadow: 0 5px 24px rgb(167 139 250 / 0.16), inset 0 1px 0 rgb(255 255 255 / 0.16);
+  font-size: clamp(0.95rem, 4.2vw, 1.125rem);
+  line-height: 1.4;
+}
+
+.location-hero .location-hero__call:hover {
+  background: #c4b5fd;
+}
+
+.location-hero .location-hero__whatsapp {
+  min-height: 3.375rem;
+  padding: 0.875rem 0.75rem;
+  border-color: rgb(196 181 253 / 0.28);
+  background: rgb(36 26 50 / 0.35);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.location-hero__trust {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  max-width: 40rem;
+  margin-top: 1.5rem;
+  color: #d7d1e0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.location-hero__trust li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.location-hero__trust li:last-child {
+  grid-column: 1 / -1;
+}
+
+.location-hero__trust li > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.location-hero__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 1px solid rgb(196 181 253 / 0.36);
+  border-radius: 50%;
+  color: #c4b5fd;
+  background: linear-gradient(135deg, rgb(167 139 250 / 0.22), rgb(167 139 250 / 0.06));
+  box-shadow: inset 0 1px 0 rgb(229 220 255 / 0.08);
+}
+
+.location-hero__eta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1.125rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid rgb(167 139 250 / 0.25);
+  border-radius: 0.625rem;
+  background: rgb(36 26 50 / 0.5);
+  color: #e5dcff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.location-hero__eta small {
+  color: #d7d1e0;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+@media (min-width: 640px) {
+  .location-hero {
+    padding-top: calc(var(--site-header-height) + 3rem);
+    padding-bottom: 3.5rem;
+  }
+  .location-hero__city { font-size: 1.75rem; }
+  .location-hero__service { font-size: 0.6875rem; }
+  .location-hero__heading { font-size: clamp(3rem, 6.8vw, 4.5rem); margin-top: 1.5rem; }
+  .location-hero__summary { font-size: 1.0625rem; margin-top: 1.25rem; }
+  .location-hero__actions { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); margin-top: 1.5rem; }
+  .location-hero__trust { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 1.75rem; }
+  .location-hero .location-hero__whatsapp { min-height: 3.75rem; }
+}
+
+@media (min-width: 1024px) {
+  .location-hero {
+    padding-top: calc(var(--site-header-height) + 3.5rem);
+    padding-bottom: 4rem;
+  }
+  .location-hero__image { object-position: center; }
+  .location-hero__shade {
+    background:
+      radial-gradient(ellipse at 12% 35%, rgb(77 43 123 / 0.17), transparent 60%),
+      linear-gradient(0deg, #100b19, rgb(16 11 25 / 0.25) 55%, rgb(16 11 25 / 0.38)),
+      linear-gradient(90deg, #100b19 0%, rgb(16 11 25 / 0.94) 35%, rgb(16 11 25 / 0.6) 63%, rgb(16 11 25 / 0.12));
+  }
+  .location-hero__heading { font-size: clamp(3.75rem, 5vw, 4.75rem); }
+}
+
+/* Short phone screens still expose the primary call above the unchanged notice. */
+@media (max-width: 639px) and (max-height: 740px) {
+  .location-hero { padding-top: calc(var(--site-header-height) + 1rem); }
+  .location-hero__actions { margin-top: 1rem; }
+}
+
+/* One short icon entrance; text and contact actions are visible from first paint. */
+@media (prefers-reduced-motion: no-preference) {
+  .location-hero__check { animation: location-check-arrive 550ms ease-out both; }
+  .location-hero__check--2 { animation-delay: 90ms; }
+  .location-hero__check--3 { animation-delay: 180ms; }
+}
+
+@keyframes location-check-arrive {
+  from { opacity: 0.65; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (forced-colors: active) {
+  .location-hero__highlight { background: none; color: CanvasText; }
+  .location-hero__check, .location-hero .location-hero__call { border-color: ButtonText; }
+}
+
 .skip-link {
   position: fixed;
   top: 0.5rem;

@@ -3,8 +3,15 @@ export type LocationPageConfig = {
   city: string;
   label: string;
   heading: string;
+  headingHighlight?: string;
   summary: string;
   trust: readonly string[];
+  eta?: {
+    enabled: boolean;
+    minutes: number;
+    operationalEvidenceConfirmed: boolean;
+    qualification: string;
+  };
   metaTitle: string;
   metaDescription: string;
   whatsappMessage: string;
@@ -32,10 +39,14 @@ export const locationPages: readonly LocationPageConfig[] = [
   {
     slug: 'birmingham',
     city: 'Birmingham',
-    label: 'Birmingham Car & Breakdown Recovery',
-    heading: 'Broken Down in Birmingham? Need Recovery Now?',
-    summary: "Call Teleport Recovery for a quote. Tell us your location, vehicle and destination. We'll check availability and confirm the price and estimated arrival time before booking.",
-    trust: ['No breakdown membership required', 'Price before booking', 'Independent recovery operators'],
+    label: 'Vehicle & Breakdown Recovery',
+    heading: 'Broken Down in Birmingham? Get Recovery Now.',
+    headingHighlight: 'Get Recovery Now.',
+    summary: "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.",
+    trust: ['No membership required', 'Price before booking', 'Independent recovery operators'],
+    // A previous individual arrival does not establish a typical ETA. Keep hidden
+    // until the owner supplies a supportable operational basis and approves its use.
+    eta: { enabled: false, minutes: 30, operationalEvidenceConfirmed: false, qualification: 'Subject to availability' },
     metaTitle: 'Emergency Car Recovery Birmingham | Teleport Recovery',
     metaDescription: 'Need car or breakdown recovery in Birmingham? Contact Teleport Recovery for an upfront quote, availability and an estimated arrival time. Scheduled transport also available.',
     whatsappMessage: 'Hi Teleport Recovery, I need vehicle recovery in Birmingham.\n\nPickup postcode:\nDestination:\nVehicle:\nIs it urgent?:\n\nCould I please get a quote and estimated arrival time?',
@@ -110,6 +121,12 @@ export const locationPages: readonly LocationPageConfig[] = [
 
 export function getLocationPath(page: LocationPageConfig): string {
   return `/recovery/${page.slug}`;
+}
+
+export function getLocationEta(page: LocationPageConfig): LocationPageConfig['eta'] | undefined {
+  const eta = page.eta;
+  return eta?.enabled && eta.operationalEvidenceConfirmed && Number.isInteger(eta.minutes)
+    && eta.minutes > 0 && eta.qualification.trim() ? eta : undefined;
 }
 
 export function getLocationPage(pathname: string): LocationPageConfig | undefined {

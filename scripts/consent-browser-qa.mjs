@@ -7,11 +7,11 @@ import { resolve } from 'node:path';
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
 const origin = process.env.QA_URL ?? 'http://127.0.0.1:4173';
-const output = resolve('qa-artifacts/consent');
+const output = resolve(process.env.QA_OUTPUT ?? 'qa-artifacts/consent');
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel: process.env.QA_BROWSER ?? 'msedge', headless: true });
 const key = 'teleport-advertising-consent';
-const results = { pages: [], accessibility: [], csp: [], pageErrors: [], consoleErrors: [], requests: [], scriptResponses: [] };
+const results = { origin, at: new Date().toISOString(), pages: [], accessibility: [], csp: [], pageErrors: [], consoleErrors: [], requests: [], scriptResponses: [] };
 const advertisingHosts = ['www.googletagmanager.com', 'www.googleadservices.com', 'www.google.com', 'www.google.co.uk', 'www.google.com.pk', 'www.gstatic.com', 'googleads.g.doubleclick.net', 'ad.doubleclick.net', 'pagead2.googlesyndication.com'];
 const isAdvertising = (url) => advertisingHosts.includes(new URL(url).hostname);
 

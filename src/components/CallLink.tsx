@@ -1,15 +1,18 @@
 import type { ComponentProps } from 'react';
 import { businessConfig } from '@/config/business';
 import { trackEvent } from '@/lib/tracking';
+import { usePhoneNumber } from '@/hooks/usePhoneNumber';
 
 type CallLinkProps = Omit<ComponentProps<'a'>, 'href'> & { location: string };
 
-/** All call controls share the canonical destination and a non-blocking event. */
+/** React owns display and destination together, including later-mounted call controls. */
 export function CallLink({ location, onClick, children, ...props }: CallLinkProps) {
+  const phone = usePhoneNumber();
   return (
     <a
       {...props}
-      href={businessConfig.phoneHref}
+      href={phone.href}
+      aria-label={props['aria-label']?.split(businessConfig.phoneDisplay).join(phone.display)}
       onClick={(event) => {
         trackEvent('call_click', { location });
         onClick?.(event);
@@ -19,3 +22,5 @@ export function CallLink({ location, onClick, children, ...props }: CallLinkProp
     </a>
   );
 }
+
+export function PhoneNumber() { return <>{usePhoneNumber().display}</>; }
