@@ -43,7 +43,7 @@ export const locationPages: readonly LocationPageConfig[] = [
     heading: 'Broken Down in Birmingham? Get Recovery Now.',
     headingHighlight: 'Get Recovery Now.',
     summary: "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.",
-    trust: ['No membership required', 'Price before booking', 'Independent recovery operators'],
+    trust: ['No membership required', 'Price before booking'],
     // A previous individual arrival does not establish a typical ETA. Keep hidden
     // until the owner supplies a supportable operational basis and approves its use.
     eta: { enabled: false, minutes: 30, operationalEvidenceConfirmed: false, qualification: 'Subject to availability' },

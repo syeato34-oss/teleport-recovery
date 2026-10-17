@@ -14,7 +14,7 @@ test('location hero has the approved concise copy and one cohesive highlighted h
   assert.equal(page.headingHighlight, 'Get Recovery Now.');
   assert.ok(page.heading.endsWith(page.headingHighlight));
   assert.equal(page.summary, "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.");
-  assert.deepEqual(page.trust, ['No membership required', 'Price before booking', 'Independent recovery operators']);
+  assert.deepEqual(page.trust, ['No membership required', 'Price before booking']);
 });
 
 test('30-minute ETA is unpublished and cannot be enabled without confirmed operational evidence', () => {

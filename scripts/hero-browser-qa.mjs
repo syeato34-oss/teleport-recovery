@@ -45,13 +45,24 @@ async function checkLayout(page, label, fresh = true) {
       whatsapp: rect('.location-hero__whatsapp'), consent: rect('.consent-panel'), sticky: rect('.mobile-conversion-bar'),
       callTextRects: [...range.getClientRects()].map((rect) => rect.toJSON()),
       trust: [...document.querySelectorAll('.location-hero__trust li')].map((item) => item.textContent),
+      trustLayout: [...document.querySelectorAll('.location-hero__trust li')].map((item) => ({
+        row: item.getBoundingClientRect().toJSON(),
+        icon: item.firstElementChild.getBoundingClientRect().toJSON(),
+        label: item.lastElementChild.getBoundingClientRect().toJSON(),
+      })),
       phone: call.getAttribute('href'), etaVisible: !!document.querySelector('.location-hero__eta') };
   });
   assert.ok(metric.scrollWidth <= metric.width, `${label}: horizontal overflow`);
   assert.equal(metric.h1Count, 1);
   assert.equal(metric.heading, 'Broken Down in Birmingham? Get Recovery Now.');
   assert.equal(metric.etaVisible, false, 'Unsubstantiated ETA must stay unpublished');
-  assert.equal(metric.trust.length, 3);
+  assert.deepEqual(metric.trust, ['No membership required', 'Price before booking']);
+  const [first, second] = metric.trustLayout;
+  assert.ok(Math.abs(first.row.width - second.row.width) < 1, 'Trust columns must have equal width');
+  assert.equal(first.row.height, second.row.height, 'Trust items must have equal height');
+  assert.equal(first.icon.top, second.icon.top, 'Trust icons must align');
+  assert.equal(first.label.top, second.label.top, 'Trust labels must align');
+  assert.equal(first.label.height, second.label.height, 'Trust labels must wrap consistently');
   assert.ok(metric.call.height >= 44 && metric.whatsapp.height >= 44);
   assert.ok(metric.callTextRects.every((rect) => rect.left >= metric.call.left && rect.right <= metric.call.right + 1), 'Phone label clipped');
   if (fresh) {
@@ -132,7 +143,8 @@ try {
   const motionPage = await open(motionContext);
   const motion = await motionPage.locator('.location-hero__check').evaluateAll((checks) => checks.map((e) => ({ name: getComputedStyle(e).animationName, iterations: getComputedStyle(e).animationIterationCount, opacity: getComputedStyle(e).opacity })));
   assert.ok(motion.every((item) => item.name === 'location-check-arrive' && item.iterations === '1' && item.opacity === '1'));
-  results.interactions.push('Three check icons use a short staggered entrance that settles; text and CTAs are never hidden');
+  assert.equal(motion.length, 2);
+  results.interactions.push('Two check icons retain the short staggered entrance; text and CTAs are never hidden');
   await motionContext.close();
 
   // Render the real App with in-memory ETA fixtures. No query parameter or production
