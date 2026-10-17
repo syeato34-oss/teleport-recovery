@@ -68,6 +68,11 @@ export function buildWhatsAppRecoveryUrl(destination: string, location: PickupLo
     pickup = `\n${maps.toString()}`;
   }
   const message = `Hi Teleport Recovery, I need vehicle recovery.\n\nPickup:${pickup}\n\nDestination:\n\nVehicle / reg:\n\nWhat happened:`;
+  return buildWhatsAppMessageUrl(destination, message);
+}
+
+/** Prefill only: opening WhatsApp never sends the customer's message automatically. */
+export function buildWhatsAppMessageUrl(destination: string, message: string): string {
   const url = new URL(destination);
   url.searchParams.set('text', message);
   return url.toString();

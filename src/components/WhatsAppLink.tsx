@@ -1,19 +1,19 @@
 import type { ComponentProps } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { businessConfig } from '@/config/business';
-import { buildWhatsAppRecoveryUrl, getWhatsAppDestination } from '@/lib/whatsapp';
+import { buildWhatsAppMessageUrl, buildWhatsAppRecoveryUrl, getWhatsAppDestination } from '@/lib/whatsapp';
 import { trackEvent } from '@/lib/tracking';
 
-type WhatsAppLinkProps = Omit<ComponentProps<'a'>, 'href'> & { location: string };
+type WhatsAppLinkProps = Omit<ComponentProps<'a'>, 'href'> & { location: string; message?: string };
 
 /** General customer messaging never requests device location. */
-export function WhatsAppLink({ location, onClick, children = 'WhatsApp Us', ...props }: WhatsAppLinkProps) {
+export function WhatsAppLink({ location, message, onClick, children = 'WhatsApp Us', ...props }: WhatsAppLinkProps) {
   const destination = getWhatsAppDestination(businessConfig.whatsappHref);
   if (!destination) return null;
   return (
     <a
       {...props}
-      href={buildWhatsAppRecoveryUrl(destination)}
+      href={message === undefined ? buildWhatsAppRecoveryUrl(destination) : buildWhatsAppMessageUrl(destination, message)}
       onClick={(event) => {
         trackEvent('whatsapp_click', { location });
         onClick?.(event);

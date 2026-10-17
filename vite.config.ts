@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, URL } from 'node:url';
 import { businessConfig } from './src/config/business';
+import { getLocationPage, getLocationPath, locationPages } from './src/config/locations';
 
 const socialImage =
   'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1200';
@@ -32,6 +33,12 @@ const homeMetadata: PageMetadata = {
   title: businessConfig.metaTitle,
   description: businessConfig.metaDescription,
 };
+
+const locationMetadata: PageMetadata[] = locationPages.map((page) => ({
+  path: getLocationPath(page),
+  title: page.metaTitle,
+  description: page.metaDescription,
+}));
 
 const legalMetadata: PageMetadata[] = [
   {
@@ -84,7 +91,7 @@ function metadataBlock(page: PageMetadata, preview: boolean) {
     <!-- site-metadata:end -->`;
 }
 
-/** Build actual HTML entry points so direct legal links have metadata before JavaScript. */
+/** Build actual HTML entry points so direct legal and city links have metadata before JavaScript. */
 function productionPages(): Plugin {
   // Netlify deploy previews and branch deployments must not compete with production in search.
   const preview = ['deploy-preview', 'branch-deploy'].includes(process.env.CONTEXT ?? '');
@@ -93,9 +100,15 @@ function productionPages(): Plugin {
     enforce: 'post',
     transformIndexHtml: {
       order: 'pre',
-      handler(html) {
+      handler(html, context) {
+        const location = context.originalUrl
+          ? getLocationPage(new URL(context.originalUrl, 'http://localhost').pathname)
+          : undefined;
+        const page: PageMetadata = location
+          ? { path: getLocationPath(location), title: location.metaTitle, description: location.metaDescription }
+          : homeMetadata;
         return html
-          .replace('<!-- business-metadata -->', metadataBlock(homeMetadata, preview))
+          .replace('<!-- business-metadata -->', metadataBlock(page, preview))
           .replace('<!-- business-noscript -->', `<p>Call <a href="${businessConfig.phoneHref}">${escapeHtml(businessConfig.phoneDisplay)}</a> for recovery assistance.</p>`);
       },
     },
@@ -105,7 +118,7 @@ function productionPages(): Plugin {
         this.error('The production index.html was not generated; legal entry points cannot be built.');
       }
       const template = index.source;
-      for (const page of [...legalMetadata, notFoundMetadata]) {
+      for (const page of [...legalMetadata, ...locationMetadata, notFoundMetadata]) {
         const html = template.replace(
           /<!-- site-metadata:start -->[\s\S]*?<!-- site-metadata:end -->/,
           metadataBlock(page, preview),
@@ -139,21 +152,23 @@ function productionPages(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'sitemap.xml',
-        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[homeMetadata, ...legalMetadata].map((page) => `  <url><loc>${escapeHtml(new URL(page.path, businessConfig.websiteUrl).href)}</loc></url>`).join('\n')}\n</urlset>\n`,
+        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[homeMetadata, ...legalMetadata, ...locationMetadata].map((page) => `  <url><loc>${escapeHtml(new URL(page.path, businessConfig.websiteUrl).href)}</loc></url>`).join('\n')}\n</urlset>\n`,
       });
 
       // The JSON-LD is the sole inline script; hash it without weakening script-src.
       const jsonLdHash = createHash('sha256').update(organization).digest('base64');
       const csp = [
         "default-src 'self'",
-        `script-src 'self' 'sha256-${jsonLdHash}'`,
+        `script-src 'self' 'sha256-${jsonLdHash}' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://www.gstatic.com/wcm/ https://www.gstatic.com/call-tracking/`,
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
-        "img-src 'self' data: https://images.pexels.com",
-        "connect-src 'self'",
+        "img-src 'self' data: https://images.pexels.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://www.google.com https://www.google.co.uk",
+        // Website-call lookup redirects by Google's detected region. This additional
+        // endpoint was observed in real-library QA; allow its attribution path only.
+        "connect-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://www.google.com https://www.google.co.uk https://www.google.com.pk/pagead/attribution/ https://ad.doubleclick.net",
         "form-action 'self'",
         "object-src 'none'",
-        "frame-src 'none'",
+        "frame-src https://www.googletagmanager.com",
         "base-uri 'self'",
         "frame-ancestors 'none'",
         'upgrade-insecure-requests',

@@ -4,7 +4,11 @@ import { readFileSync } from 'node:fs';
 import { transformSync } from 'esbuild';
 
 async function loadTypescript(path) {
-  const result = transformSync(readFileSync(path, 'utf8'), { loader: 'ts', format: 'esm', target: 'es2020' });
+  let source = readFileSync(path, 'utf8');
+  // The consent state machine is tested separately; isolate this hook's guard and payload.
+  const consentStub = `data:text/javascript;base64,${Buffer.from('export const getAdvertisingChoice = () => globalThis.qaAdvertisingChoice ?? null;').toString('base64')}`;
+  source = source.replace("from './advertisingConsent'", `from '${consentStub}'`);
+  const result = transformSync(source, { loader: 'ts', format: 'esm', target: 'es2020' });
   return import(`data:text/javascript;base64,${Buffer.from(result.code).toString('base64')}`);
 }
 const callback = await loadTypescript('src/lib/callback.ts');
@@ -73,10 +77,14 @@ test('tracking is optional, contains no customer details and cannot block an act
   assert.doesNotThrow(() => trackEvent('call_click'));
   const items = [];
   globalThis.window = { dataLayer: items };
+  trackEvent('call_click', { location: 'before_consent' });
+  assert.deepEqual(items, [], 'Events must not be buffered before advertising consent');
+  globalThis.qaAdvertisingChoice = 'accepted';
   trackEvent('callback_submit', { location: 'contact' });
   assert.deepEqual(items, [{ event: 'callback_submit', location: 'contact' }]);
   globalThis.window = { dataLayer: { push() { throw new Error('Analytics unavailable'); } } };
   assert.doesNotThrow(() => trackEvent('call_click'));
+  delete globalThis.qaAdvertisingChoice;
   delete globalThis.window;
 });
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { ArrowLeft, Phone } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { trackEvent } from '@/lib/tracking';
+import { PrivacySettingsButton } from '@/components/AdvertisingConsent';
 
 export type LegalPath = '/terms' | '/guarantee' | '/privacy';
 
@@ -11,9 +12,9 @@ const pageTitles: Record<LegalPath, string> = {
   '/privacy': 'Privacy Policy',
 };
 
-function LegalSection({ title, children }: { title: string; children: ReactNode }) {
+function LegalSection({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
   return (
-    <section className="space-y-3">
+    <section id={id} className="space-y-3">
       <h2 className="text-xl font-semibold leading-snug text-white sm:text-2xl">{title}</h2>
       {children}
     </section>
@@ -235,7 +236,7 @@ function PrivacyNotice() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Website services and analytics">
+      <LegalSection title="Website services">
         <p>
           This website loads its typeface from Google Fonts. Your browser makes requests to Google
           to load those fonts, which involves sharing technical connection information such as
@@ -252,11 +253,54 @@ function PrivacyNotice() {
           30 minutes of inactivity, and <code>_cfuvid</code>, a session cookie used for rate
           limiting. These support the image host&apos;s security and are not advertising cookies.
         </p>
+      </LegalSection>
+
+      <LegalSection id="advertising-privacy" title="Optional Google Ads measurement">
         <p>
-          This version of the website does not install advertising or analytics tags. If analytics
-          or other services are added, the privacy information and any required consent controls
-          will need to reflect those services.
+          With your permission, this website loads Google Ads conversion measurement to help
+          Teleport understand whether its adverts lead to website visits and telephone enquiries.
+          The existing website-call configuration can use a Google forwarding number to attribute
+          eligible calls to an advert. Clicking a call or WhatsApp button does not establish that
+          a call was completed or a recovery was booked.
         </p>
+        <p>
+          Google may receive technical information such as your IP address, browser/device details,
+          the page visited, advertising click identifiers and conversion information. Cookies or
+          similar technologies may store identifiers linking an advert visit to a later call.
+          These may include first-party cookies beginning <code>_gcl_</code> and the website-call
+          cookie <code>gwcc</code>, depending on the visit and Google&apos;s configuration.
+          Advertising click cookies commonly last up to 90 days; actual cookies and lifetimes can
+          vary. See{' '}
+          <a href="https://business.safety.google/adscookies/" className="text-accent-light underline underline-offset-4">Google&apos;s advertising cookie information</a>{' '}
+          and{' '}
+          <a href="https://policies.google.com/privacy" className="text-accent-light underline underline-offset-4">Google&apos;s Privacy Policy</a>{' '}
+          for its processing, retention and international handling of information.
+        </p>
+        <p>
+          Advertising measurement is off by default. Google advertising tags are not loaded until
+          you select &quot;Accept advertising&quot;. Selecting &quot;Reject advertising&quot; keeps them
+          off. This website uses basic consent mode; it does not send advertising cookieless pings
+          before consent. Google Analytics and advertising personalisation remain disabled.
+          Callback names, telephone numbers, message contents and precise GPS coordinates are not
+          included in the website&apos;s measurement events.
+        </p>
+        <p>
+          We remember your advertising choice in your browser&apos;s local storage, under{' '}
+          <code className="break-all">teleport-advertising-consent</code>, for 180 days. This preference
+          contains the choice, version and time, not a customer identifier. It is used to respect
+          your privacy choice. If storage is unavailable, a new acceptance will not enable tracking.
+          You may be asked again after expiry, clearing browser storage or a material change to
+          the measurement purposes.
+        </p>
+        <p>
+          Use &quot;Advertising privacy settings&quot; in the footer or below to change your choice
+          at any time. Rejecting after acceptance withdraws consent, removes readable first-party
+          advertising cookies and reloads the page to stop already-loaded Google tags. Withdrawal
+          does not undo earlier processing. Third-party cookies that this website cannot delete
+          can be managed using your browser&apos;s controls. Calling, WhatsApp and callback requests
+          remain available whether you accept or reject.
+        </p>
+        <PrivacySettingsButton />
       </LegalSection>
 
       <LegalSection title="Retention and further information">

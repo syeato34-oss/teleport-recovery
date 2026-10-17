@@ -2,6 +2,7 @@ import { CallLink } from '@/components/CallLink';
 import { Phone } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { BrandLogo } from '@/components/BrandLogo';
+import { PrivacySettingsButton } from '@/components/AdvertisingConsent';
 
 export function Footer() {
   return (
@@ -66,6 +67,7 @@ export function Footer() {
             <a href={businessConfig.termsUrl} className="inline-flex min-h-11 items-center hover:text-white">Terms &amp; Conditions</a>
             <a href={businessConfig.guaranteeUrl} className="inline-flex min-h-11 items-center hover:text-white">Money-Back Guarantee</a>
             <a href={businessConfig.privacyUrl} className="inline-flex min-h-11 items-center hover:text-white">Privacy Policy</a>
+            <PrivacySettingsButton />
           </nav>
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <p className="text-xs text-text-muted/60">

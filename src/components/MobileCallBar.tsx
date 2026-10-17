@@ -8,7 +8,7 @@ import { WhatsAppLink } from '@/components/WhatsAppLink';
  * Fixed call-first conversion bar visible on mobile only.
  * Its measured height reserves scrolling space for keyboard focus and the footer.
  */
-export function MobileCallBar() {
+export function MobileCallBar({ whatsappMessage }: { whatsappMessage?: string }) {
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export function MobileCallBar() {
         </CallLink>
         <WhatsAppLink
           location="sticky_mobile"
+          message={whatsappMessage}
           className="btn-secondary min-w-0 px-3 text-base"
           aria-label={`WhatsApp — Message ${businessConfig.tradingName}`}
         >WhatsApp</WhatsAppLink>

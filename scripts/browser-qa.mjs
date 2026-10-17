@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { consentedFunctionalContext } from './consent-qa-fixture.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
@@ -12,6 +13,7 @@ await mkdir(artifacts, { recursive: true });
 const browser = await chromium.launch({ channel: process.env.QA_BROWSER ?? 'msedge', headless: true });
 const results = { viewports: [], routes: [], interactions: [], pageErrors: [], consoleErrors: [], cspViolations: [], externalFailures: [] };
 const context = await browser.newContext();
+await consentedFunctionalContext(context);
 await context.addInitScript(() => {
   window.dataLayer = [];
   window.qaGpsCalls = 0;
@@ -174,12 +176,13 @@ try {
 
   for (const scenario of ['success', 'denied', 'unavailable', 'timeout', 'unsupported', 'coarse', 'deadline', 'duplicate']) {
     const gpsContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    await consentedFunctionalContext(gpsContext);
     let snapshot;
     await gpsContext.exposeBinding('qaCapture', (_source, value) => { snapshot = value; });
     await gpsContext.addInitScript((scenario) => {
       window.dataLayer = [];
       window.qaGps = { calls: 0, options: null };
-      const capture = () => window.qaCapture({ gps: window.qaGps, events: window.dataLayer,
+      const capture = () => window.qaCapture({ gps: window.qaGps, events: window.dataLayer.filter((item) => item?.event),
         local: { ...localStorage }, session: { ...sessionStorage } });
       const geolocation = {
         getCurrentPosition(success, failure, options) {
@@ -227,7 +230,8 @@ try {
     assert.equal(snapshot.gps.calls, scenario === 'unsupported' ? 0 : 1);
     if (snapshot.gps.calls) assert.deepEqual(snapshot.gps.options, { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 });
     assert.deepEqual(snapshot.events, [{ event: 'whatsapp_click', location: 'coverage_location' }]);
-    assert.deepEqual(snapshot.local, {});
+    assert.deepEqual(Object.keys(snapshot.local), ['teleport-advertising-consent']);
+    assert.equal(JSON.parse(snapshot.local['teleport-advertising-consent']).choice, 'accepted');
     assert.deepEqual(snapshot.session, {});
     results.interactions.push(`Location ${scenario}: bounded explicit request, same-tab manual draft, no storage or personal tracking data`);
     await gpsContext.close();

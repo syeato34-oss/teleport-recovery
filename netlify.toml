@@ -25,7 +25,7 @@
   status = 301
   force = true
 
-# Only known legal routes get application entry points. Netlify normalizes trailing
+# Only known legal and city routes get application entry points. Netlify normalizes trailing
 # slashes before matching; slash-to-no-slash redirects would create loops.
 [[redirects]]
   from = "/index.html"
@@ -66,6 +66,19 @@
 [[redirects]]
   from = "/privacy"
   to = "/privacy/index.html"
+  status = 200
+  force = true
+
+# Publish additional city routes explicitly, alongside src/config/locations.ts.
+[[redirects]]
+  from = "/recovery/birmingham/index.html"
+  to = "/recovery/birmingham"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/recovery/birmingham"
+  to = "/recovery/birmingham/index.html"
   status = 200
   force = true
 
