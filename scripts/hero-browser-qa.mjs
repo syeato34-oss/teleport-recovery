@@ -55,7 +55,14 @@ async function checkLayout(page, label, fresh = true) {
   assert.ok(metric.scrollWidth <= metric.width, `${label}: horizontal overflow`);
   assert.equal(metric.h1Count, 1);
   assert.equal(metric.heading, 'Broken Down in Birmingham? Get Recovery Now.');
-  assert.equal(metric.etaVisible, false, 'Unsubstantiated ETA must stay unpublished');
+  assert.equal(metric.etaVisible, true, 'Owner-requested ETA must be enabled');
+  assert.equal(await page.locator('.location-hero__eta > span').innerText(), '30 MIN ETA*');
+  assert.equal(await page.locator('.location-hero__eta small').innerText(), '*Subject to availability');
+  assert.ok(await page.locator('.location-hero__eta').evaluate((eta) => {
+    const label = eta.querySelector('span').getBoundingClientRect();
+    const note = eta.querySelector('small').getBoundingClientRect();
+    return note.top >= label.bottom;
+  }), 'ETA qualification must be beneath the label');
   assert.deepEqual(metric.trust, ['No membership required', 'Price before booking']);
   const [first, second] = metric.trustLayout;
   assert.ok(Math.abs(first.row.width - second.row.width) < 1, 'Trust columns must have equal width');
@@ -148,8 +155,8 @@ try {
   await motionContext.close();
 
   // Render the real App with in-memory ETA fixtures. No query parameter or production
-  // preview switch is added; the shipped Birmingham config remains disabled/unconfirmed.
-  const harness = await build({ stdin: { contents: `import React from 'react'; import {createRoot} from 'react-dom/client'; import App from './src/App'; import {locationPages} from './src/config/locations'; const root=createRoot(document.getElementById('root')); history.replaceState({},'','/recovery/birmingham'); window.qaEta=(eta)=>{locationPages[0].eta=eta;root.render(<App/>)};window.qaEta({enabled:false,minutes:30,operationalEvidenceConfirmed:false,qualification:'Subject to availability'});`, resolveDir: process.cwd(), loader: 'tsx' }, alias: { '@': resolve('src') }, jsx: 'automatic', bundle: true, write: false, format: 'iife', define: { 'process.env.NODE_ENV': '"production"' } });
+  // preview switch is added; configuration still controls enablement and duration.
+  const harness = await build({ stdin: { contents: `import React from 'react'; import {createRoot} from 'react-dom/client'; import App from './src/App'; import {locationPages} from './src/config/locations'; const root=createRoot(document.getElementById('root')); history.replaceState({},'','/recovery/birmingham'); window.qaEta=(eta)=>{locationPages[0].eta=eta;root.render(<App/>)};window.qaEta({enabled:false,minutes:30,qualification:'Subject to availability'});`, resolveDir: process.cwd(), loader: 'tsx' }, alias: { '@': resolve('src') }, jsx: 'automatic', bundle: true, write: false, format: 'iife', define: { 'process.env.NODE_ENV': '"production"' } });
   const etaContext = await context();
   await etaContext.route('**/qa-eta-fixture', (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<div id="root"></div><script src="/qa-eta-fixture.js"></script>' }));
   await etaContext.route('**/qa-eta-fixture.js', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: harness.outputFiles[0].text }));
@@ -158,19 +165,16 @@ try {
   const css = await readFile('dist/index.html', 'utf8');
   await etaPage.addStyleTag({ url: origin + css.match(/href="([^"]+\.css)"/)[1] });
   await etaPage.getByRole('button', { name: 'Reject advertising', exact: true }).click();
-  const fixture = { enabled: true, minutes: 30, operationalEvidenceConfirmed: false, qualification: 'Subject to availability' };
+  const fixture = { enabled: true, minutes: 30, qualification: 'Subject to availability' };
   await etaPage.evaluate((eta) => window.qaEta(eta), fixture);
-  await etaPage.waitForTimeout(100);
-  assert.equal(await etaPage.locator('.location-hero__eta').count(), 0);
-  await etaPage.evaluate((eta) => window.qaEta(eta), { ...fixture, operationalEvidenceConfirmed: true });
   await etaPage.locator('.location-hero__eta').waitFor();
   assert.ok((await etaPage.locator('.location-hero__eta').innerText()).includes('30 MIN ETA*'));
   await etaPage.screenshot({ path: resolve(directory, 'eta-preview-only.png') });
-  await etaPage.evaluate((eta) => window.qaEta(eta), { ...fixture, operationalEvidenceConfirmed: true, minutes: 40 });
+  await etaPage.evaluate((eta) => window.qaEta(eta), { ...fixture, minutes: 40 });
   await etaPage.getByText('40 MIN ETA*', { exact: true }).waitFor();
-  await etaPage.evaluate((eta) => window.qaEta(eta), { ...fixture, enabled: false, operationalEvidenceConfirmed: true });
+  await etaPage.evaluate((eta) => window.qaEta(eta), { ...fixture, enabled: false });
   await etaPage.locator('.location-hero__eta').waitFor({ state: 'detached' });
-  results.interactions.push('ETA fixture: hidden without evidence, previewed at 30, changed to 40, disabled again; shipped config stays hidden');
+  results.interactions.push('ETA configuration: enabled at 30, changed to 40, then disabled in isolated fixture');
   await etaContext.close();
 
   for (const [file, hash] of Object.entries(protectedBefore)) {

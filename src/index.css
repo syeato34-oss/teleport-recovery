@@ -156,10 +156,10 @@
 }
 
 .location-hero__eta {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.25rem 0.5rem;
   width: fit-content;
   max-width: 100%;
   margin-top: 1.125rem;
@@ -168,12 +168,14 @@
   border-radius: 0.625rem;
   background: rgb(36 26 50 / 0.5);
   color: #e5dcff;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
 
 .location-hero__eta small {
+  grid-column: 1 / -1;
+  text-align: center;
   color: #d7d1e0;
   font-size: 0.75rem;
   font-weight: 400;

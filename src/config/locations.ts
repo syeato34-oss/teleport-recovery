@@ -9,7 +9,6 @@ export type LocationPageConfig = {
   eta?: {
     enabled: boolean;
     minutes: number;
-    operationalEvidenceConfirmed: boolean;
     qualification: string;
   };
   metaTitle: string;
@@ -44,9 +43,8 @@ export const locationPages: readonly LocationPageConfig[] = [
     headingHighlight: 'Get Recovery Now.',
     summary: "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.",
     trust: ['No membership required', 'Price before booking'],
-    // A previous individual arrival does not establish a typical ETA. Keep hidden
-    // until the owner supplies a supportable operational basis and approves its use.
-    eta: { enabled: false, minutes: 30, operationalEvidenceConfirmed: false, qualification: 'Subject to availability' },
+    // Enabled at the owner's request; this estimate is not an average or guarantee.
+    eta: { enabled: true, minutes: 30, qualification: 'Subject to availability' },
     metaTitle: 'Emergency Car Recovery Birmingham | Teleport Recovery',
     metaDescription: 'Need car or breakdown recovery in Birmingham? Contact Teleport Recovery for an upfront quote, availability and an estimated arrival time. Scheduled transport also available.',
     whatsappMessage: 'Hi Teleport Recovery, I need vehicle recovery in Birmingham.\n\nPickup postcode:\nDestination:\nVehicle:\nIs it urgent?:\n\nCould I please get a quote and estimated arrival time?',
@@ -125,7 +123,7 @@ export function getLocationPath(page: LocationPageConfig): string {
 
 export function getLocationEta(page: LocationPageConfig): LocationPageConfig['eta'] | undefined {
   const eta = page.eta;
-  return eta?.enabled && eta.operationalEvidenceConfirmed && Number.isInteger(eta.minutes)
+  return eta?.enabled && Number.isInteger(eta.minutes)
     && eta.minutes > 0 && eta.qualification.trim() ? eta : undefined;
 }
 
