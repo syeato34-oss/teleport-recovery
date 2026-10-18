@@ -5,9 +5,10 @@ import { businessConfig } from '@/config/business';
 import { BrandLogo } from '@/components/BrandLogo';
 
 const navLinks = [
-  { label: 'Services', href: '/#services' },
+  { label: 'Services', href: '/services' },
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Coverage', href: '/#coverage' },
+  { label: 'Recovery Areas', href: '/areas' },
+  { label: 'Share Location', href: '/#pickup' },
   { label: 'FAQs', href: '/#faqs' },
 ];
 

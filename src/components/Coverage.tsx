@@ -1,13 +1,12 @@
-import { CallLink } from '@/components/CallLink';
+import { RecoveryContactActions } from '@/components/RecoveryContactActions';
 import { MapPinned, Navigation } from 'lucide-react';
-import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
 
 const COVERAGE_IMAGE =
   'https://images.pexels.com/photos/24343234/pexels-photo-24343234.jpeg?auto=compress&cs=tinysrgb';
 
 export function Coverage() {
   return (
-    <section id="coverage" className="bg-midnight py-20 lg:py-28">
+    <section id="pickup" className="bg-midnight py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Image */}
@@ -29,13 +28,12 @@ export function Coverage() {
           <div className="order-1 lg:order-2">
             <span className="section-label">
               <MapPinned className="h-4 w-4" aria-hidden="true" />
-              Nationwide Coverage
+              Your pickup
             </span>
-            <h2 className="heading-lg mt-3 text-white">Vehicle Recovery Anywhere in the UK</h2>
+            <h2 className="heading-lg mt-3 text-white">Where Is Your Vehicle?</h2>
             <p className="mt-4 body-lg">
-              We arrange local and longer-distance vehicle recovery across the UK. Tell us where
-              you are and where the vehicle needs to go — we'll check what's available for your
-              journey.
+              Send your pickup location or tell us the nearest postcode, road or landmark.
+              Location access is optional; you can enter the pickup manually in WhatsApp.
             </p>
 
             <div className="mt-8 space-y-4">
@@ -68,12 +66,7 @@ export function Coverage() {
               whether to proceed.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <CallLink location="coverage" className="btn-primary w-full sm:w-auto">
-                Call to Check Availability
-              </CallLink>
-              <WhatsAppLocationButton location="coverage_location" className="w-full sm:w-auto" />
-            </div>
+            <div className="mt-8"><RecoveryContactActions location="coverage" /></div>
           </div>
         </div>
       </div>

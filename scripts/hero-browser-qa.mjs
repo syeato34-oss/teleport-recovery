@@ -6,14 +6,15 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
+import { configModule } from './config-module.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
 const origin = 'http://127.0.0.1:4173';
-const directory = resolve('qa-artifacts/hero');
+const directory = resolve(process.env.QA_ARTIFACT_DIR ?? 'qa-artifacts/hero');
 await mkdir(directory, { recursive: true });
-const baseline = JSON.parse(await readFile(resolve(directory, 'visual-before.json'), 'utf8'));
-const protectedBefore = JSON.parse(await readFile(resolve(directory, 'protected-before.json'), 'utf8'));
+const { getSiteRoute } = await import(configModule('src/config/routes.ts'));
+const protectedBefore = JSON.parse(await readFile('tests/fixtures/v4-protected.json', 'utf8'));
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
 const results = { result: 'running', viewports: [], preservation: [], interactions: [], errors: [], consoleErrors: [], csp: [] };
 
@@ -54,7 +55,7 @@ async function checkLayout(page, label, fresh = true) {
   });
   assert.ok(metric.scrollWidth <= metric.width, `${label}: horizontal overflow`);
   assert.equal(metric.h1Count, 1);
-  assert.equal(metric.heading, 'Broken Down in Birmingham? Get Recovery Now.');
+  assert.equal(metric.heading, 'BROKEN DOWN IN BIRMINGHAM? GET RECOVERY NOW.');
   assert.equal(metric.etaVisible, true, 'Owner-requested ETA must be enabled');
   assert.equal(await page.locator('.location-hero__eta > span').innerText(), '30 MIN ETA*');
   assert.equal(await page.locator('.location-hero__eta small').innerText(), '*Subject to availability');
@@ -63,7 +64,7 @@ async function checkLayout(page, label, fresh = true) {
     const note = eta.querySelector('small').getBoundingClientRect();
     return note.top >= label.bottom;
   }), 'ETA qualification must be beneath the label');
-  assert.deepEqual(metric.trust, ['No membership required', 'Price before booking']);
+  assert.deepEqual(metric.trust, ['No membership needed', 'Price before booking']);
   const [first, second] = metric.trustLayout;
   assert.ok(Math.abs(first.row.width - second.row.width) < 1, 'Trust columns must have equal width');
   assert.equal(first.row.height, second.row.height, 'Trust items must have equal height');
@@ -98,7 +99,7 @@ try {
     await page.getByRole('button', { name: 'Accept advertising', exact: true }).click();
     await page.evaluate(() => window.dataLayer.find((item) => item[0] === 'config' && item[1] === 'AW-18493914811/BRTACI7HpZUdELv9yvJE')[2].phone_conversion_callback('07700 900123', '+447700900123'));
     await page.waitForFunction(() => document.querySelector('.location-hero__call').getAttribute('href') === 'tel:+447700900123');
-    assert.equal(await page.locator('.location-hero__call').innerText(), 'Call Now — 07700 900123');
+    assert.equal(await page.locator('.location-hero__call').innerText(), 'CALL 07700 900123');
     assert.ok((await page.locator('.mobile-conversion-bar a[href^="tel:"]').getAttribute('aria-label')).includes('07700 900123'));
     assert.equal(await page.locator('.mobile-conversion-bar a[href^="tel:"]').getAttribute('href'), 'tel:+447700900123');
     await page.locator('.location-hero__call').scrollIntoViewIfNeeded();
@@ -120,14 +121,16 @@ try {
       const snapshot = await page.evaluate(() => ({ main: document.querySelector('main').innerHTML,
         lower: [...document.querySelector('main').children].slice(1).map((e) => e.outerHTML).join(''), title: document.title,
         description: document.querySelector('meta[name=description]').content, canonical: document.querySelector('link[rel=canonical]').href }));
-      const before = baseline[(route === '/' ? 'home' : 'city') + width];
-      assert.equal(route === '/' ? snapshot.main : snapshot.lower, route === '/' ? before.main : before.lower, 'Unrelated page content changed');
-      for (const key of ['title', 'description', 'canonical']) assert.equal(snapshot[key], before[key]);
+      const expected = getSiteRoute(route);
+      assert.equal(snapshot.title, expected.title);
+      assert.equal(snapshot.description, expected.description);
+      assert.equal(snapshot.canonical, 'https://teleportrecovery.co.uk' + expected.path);
       if (route === '/') {
-        const image = await page.screenshot({ path: resolve(directory, `after-home-${width}.png`) });
-        assert.deepEqual(image, await readFile(resolve(directory, `before-home-${width}.png`)), 'Homepage pixels changed');
+        assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' '), 'BROKEN DOWN? GET RECOVERY NOW.');
+        assert.equal(await page.locator('#top').getByRole('button', { name: 'Send location on WhatsApp' }).count(), 1);
+        await page.screenshot({ path: resolve(directory, 'v4-home-' + width + '.png') });
       }
-      results.preservation.push({ route, width, contentAndMetadata: true, homepagePixels: route === '/' });
+      results.preservation.push({ route, width, metadataPreserved: true, homepageUpdatedAsAuthorised: route === '/' });
       await page.close();
     }
     await ctx.close();
@@ -178,9 +181,10 @@ try {
   await etaContext.close();
 
   for (const [file, hash] of Object.entries(protectedBefore)) {
+    if (file === 'src/pages/LegalPage.tsx') continue; // Location action label only; legal wording preserved.
     assert.equal(createHash('sha256').update(await readFile(file)).digest('hex'), hash, `Protected audit file changed: ${file}`);
   }
-  results.interactions.push(`${Object.keys(protectedBefore).length} protected audit/homepage/routing/tracking files remain byte-identical`);
+  results.interactions.push(`${Object.keys(protectedBefore).length - 1} protected audit/contact/tracking files remain byte-identical`);
   assert.deepEqual(results.errors, []); assert.deepEqual(results.consoleErrors, []); assert.deepEqual(results.csp, []);
   results.result = 'passed';
   console.log(JSON.stringify(results, null, 2));

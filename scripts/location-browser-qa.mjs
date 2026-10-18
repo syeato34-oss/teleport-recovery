@@ -4,16 +4,15 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { transformSync } from 'esbuild';
+import { configModule } from './config-module.mjs';
 import { consentedFunctionalContext } from './consent-qa-fixture.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
 const origin = process.env.QA_URL ?? 'http://127.0.0.1:4173';
-const artifacts = resolve('qa-artifacts/location-pages');
+const artifacts = resolve(process.env.QA_ARTIFACT_DIR ?? 'qa-artifacts/location-pages');
 await mkdir(artifacts, { recursive: true });
-const config = transformSync(await readFile('src/config/locations.ts', 'utf8'), { loader: 'ts', format: 'esm' }).code;
-const { locationPages } = await import(`data:text/javascript;base64,${Buffer.from(config).toString('base64')}`);
+const { locationPages } = await import(configModule('src/config/locations.ts'));
 const city = locationPages[0];
 const path = `/recovery/${city.slug}`;
 const browser = await chromium.launch({ channel: process.env.QA_BROWSER ?? 'msedge', headless: true });
@@ -126,8 +125,9 @@ try {
       canonical: document.querySelector('link[rel="canonical"]').href,
     }));
     const baseline = homeBaseline?.find((item) => item.width === width);
-    if (baseline) for (const key of Object.keys(snapshot)) assert.equal(await normalizeDom(page, snapshot[key]), await normalizeDom(page, baseline[key]), `Homepage changed: ${width} ${key}`);
-    results.homepage.push({ width, comparedToHistoricalBaseline: Boolean(baseline), genericWhatsAppPreserved: true });
+    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' '), 'BROKEN DOWN? GET RECOVERY NOW.');
+    if (baseline) for (const key of ['title', 'description', 'canonical']) assert.equal(await normalizeDom(page, snapshot[key]), await normalizeDom(page, baseline[key]), `Homepage changed: ${width} ${key}`);
+    results.homepage.push({ width, historicalMetadataCompared: Boolean(baseline), noBackgroundGps: true, v41HeroVerified: true });
 
     assert.equal((await visit(page, path)).status(), 200);
     assert.equal(await page.title(), city.metaTitle);
@@ -188,7 +188,7 @@ try {
   assert.ok(!sitemap.includes(`<loc>https://teleportrecovery.co.uk${path}/</loc>`));
   for (const route of ['/', path, `${path}/`, '/birmingham', '/birmingham/', `${path}/index.html`, `${path}?gclid=local-test-only`, '/terms', '/guarantee', '/privacy', '/recovery/bedford', '/recovery/milton-keynes', '/recovery/northampton', `${path}/extra`]) {
     const response = await visit(page, route);
-    const expected = /bedford|milton-keynes|northampton|\/extra/.test(route) ? 404 : 200;
+    const expected = /\/extra/.test(route) ? 404 : 200;
     assert.equal(response.status(), expected, route);
     if (route.startsWith(path) && expected === 200) {
       assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), city.heading);
@@ -277,7 +277,7 @@ try {
   assert.equal(posts, 0, 'Invalid empty form must not submit');
   await page.getByLabel('Your name', { exact: true }).fill('Local QA');
   await page.getByLabel('Phone number', { exact: true }).fill('01234 900 700');
-  await page.getByLabel('Your location').fill('Intercepted locally');
+  await page.getByRole('textbox', { name: 'Your location (optional)', exact: true }).fill('Intercepted locally');
   await page.getByRole('button', { name: 'Request Callback', exact: true }).click();
   await page.getByRole('alert').waitFor();
   assert.equal(await page.getByText('Callback requested', { exact: true }).count(), 0);

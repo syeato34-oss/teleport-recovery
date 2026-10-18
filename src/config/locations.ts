@@ -1,4 +1,11 @@
+import { areas } from './areas';
+import { cityHero } from './heroes';
+import { createAreaPage } from './locationTemplates';
+
 export type LocationPageConfig = {
+  path?: string;
+  eyebrow: string;
+  locationSharingPrimary?: boolean;
   slug: string;
   city: string;
   label: string;
@@ -32,17 +39,14 @@ export type LocationPageConfig = {
   availabilityNote: string;
 };
 
-// Only published cities belong here. Adding a city reuses the page and metadata builder;
-// add its two explicit Netlify routes as well. Do not add speculative service locations.
-export const locationPages: readonly LocationPageConfig[] = [
+// Preserve the established Birmingham configuration. New authored area pages below
+// reuse this template; their routes, metadata and Netlify rewrites are generated.
+const existingLocationPages: readonly LocationPageConfig[] = [
   {
     slug: 'birmingham',
     city: 'Birmingham',
     label: 'Vehicle & Breakdown Recovery',
-    heading: 'Broken Down in Birmingham? Get Recovery Now.',
-    headingHighlight: 'Get Recovery Now.',
-    summary: "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.",
-    trust: ['No membership required', 'Price before booking'],
+    ...cityHero('Birmingham'),
     // Enabled at the owner's request; this estimate is not an average or guarantee.
     eta: { enabled: true, minutes: 30, qualification: 'Subject to availability' },
     metaTitle: 'Emergency Car Recovery Birmingham | Teleport Recovery',
@@ -117,8 +121,13 @@ export const locationPages: readonly LocationPageConfig[] = [
   },
 ];
 
+export const locationPages: readonly LocationPageConfig[] = [
+  ...existingLocationPages,
+  ...areas.filter((area) => area.indexing === 'indexable' && area.id !== 'birmingham').map((area) => createAreaPage(area, existingLocationPages[0])),
+];
+
 export function getLocationPath(page: LocationPageConfig): string {
-  return `/recovery/${page.slug}`;
+  return page.path ?? `/recovery/${page.slug}`;
 }
 
 export function getLocationEta(page: LocationPageConfig): LocationPageConfig['eta'] | undefined {

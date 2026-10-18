@@ -1,20 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { transformSync } from 'esbuild';
+import { configModule } from '../scripts/config-module.mjs';
 
-const { code } = transformSync(readFileSync('src/config/locations.ts', 'utf8'), { loader: 'ts', format: 'esm' });
-const { locationPages, getLocationEta } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
+const { locationPages, getLocationEta } = await import(configModule('src/config/locations.ts'));
 const page = locationPages[0];
 
 test('location hero has the approved concise copy and one cohesive highlighted heading', () => {
   assert.equal(page.city, 'Birmingham');
   assert.equal(page.label, 'Vehicle & Breakdown Recovery');
-  assert.equal(page.heading, 'Broken Down in Birmingham? Get Recovery Now.');
-  assert.equal(page.headingHighlight, 'Get Recovery Now.');
+  assert.equal(page.heading, 'BROKEN DOWN IN BIRMINGHAM? GET RECOVERY NOW.');
+  assert.equal(page.headingHighlight, 'GET RECOVERY NOW.');
   assert.ok(page.heading.endsWith(page.headingHighlight));
-  assert.equal(page.summary, "Need vehicle recovery? Call for a quote and estimated arrival time. We'll confirm availability and the price before booking.");
-  assert.deepEqual(page.trust, ['No membership required', 'Price before booking']);
+  assert.equal(page.summary, 'Need vehicle recovery in Birmingham? Call now for availability, a clear quote and an estimated arrival time.');
+  assert.deepEqual(page.trust, ['No membership needed', 'Price before booking']);
 });
 
 test('owner-requested 30-minute ETA is enabled with a short availability qualification', () => {

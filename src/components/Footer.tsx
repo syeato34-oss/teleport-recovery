@@ -38,7 +38,7 @@ export function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-accent-light">Navigate</h3>
             <ul className="mt-4 space-y-3">
               <li>
-                <a href="/#services" className="text-sm text-text-muted hover:text-white transition-colors">
+                <a href="/services" className="text-sm text-text-muted hover:text-white transition-colors">
                   Services
                 </a>
               </li>
@@ -48,8 +48,8 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#coverage" className="text-sm text-text-muted hover:text-white transition-colors">
-                  Coverage
+                <a href="/areas" className="text-sm text-text-muted hover:text-white transition-colors">
+                  Recovery areas
                 </a>
               </li>
               <li>
@@ -63,6 +63,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-10 border-t border-divider pt-6">
+          <p className="mb-5"><a href="/advice" className="inline-flex min-h-11 items-center text-sm text-accent-light underline underline-offset-4">Recovery advice & pickup guides</a></p>
           <nav aria-label="Legal" className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-muted">
             <a href={businessConfig.termsUrl} className="inline-flex min-h-11 items-center hover:text-white">Terms &amp; Conditions</a>
             <a href={businessConfig.guaranteeUrl} className="inline-flex min-h-11 items-center hover:text-white">Money-Back Guarantee</a>

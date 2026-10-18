@@ -1,6 +1,7 @@
 import { MapPin, Car, Wrench, Flag, ShieldCheck } from 'lucide-react';
 
 const preparationItems = [
+  { icon: MapPin, label: 'Access and condition', detail: 'Tell us about barriers, height restrictions, locked wheels or whether the vehicle can roll and steer.' },
   {
     icon: MapPin,
     label: 'Your location',

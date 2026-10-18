@@ -1,67 +1,20 @@
 import { useId, useState } from 'react';
-import { Check, ChevronDown, Clock3, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { ChevronDown, ShieldCheck } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { getLocationEta, type LocationPageConfig } from '@/config/locations';
-import { CallLink, PhoneNumber } from '@/components/CallLink';
 import { WhatsAppLink } from '@/components/WhatsAppLink';
 import { CallbackSection } from '@/components/ContactSection';
-
-const recoveryImage = 'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb';
+import { AreaConnections, Breadcrumbs } from '@/components/RecoveryNavigation';
+import { RecoveryHero } from '@/components/RecoveryHero';
+import { RecoveryContactActions } from '@/components/RecoveryContactActions';
+import { getLocationPath } from '@/config/locations';
 
 function LocationActions({ page, placement }: { page: LocationPageConfig; placement: 'hero' | 'final_cta' }) {
-  const hero = placement === 'hero';
-  return (
-    <div className={hero ? 'location-hero__actions' : 'mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap'}>
-      <CallLink location={`${page.slug}_${placement}`} className={`btn-primary hero-call-cta min-h-[58px] text-lg font-bold${hero ? ' location-hero__call' : ''}`}>
-        <Phone className="h-5 w-5 shrink-0" aria-hidden="true" />
-        <span className="min-w-0 break-words">{hero ? 'Call Now — ' : 'Call '}<PhoneNumber /></span>
-      </CallLink>
-      <WhatsAppLink location={`${page.slug}_${placement}`} message={page.whatsappMessage} className={`btn-secondary min-h-[58px] text-base font-semibold${hero ? ' location-hero__whatsapp' : ''}`}>
-        WhatsApp for a Quote
-      </WhatsAppLink>
-    </div>
-  );
+  return <RecoveryContactActions location={page.slug + '_' + placement} city={page.city} />;
 }
 
 function LocationHero({ page }: { page: LocationPageConfig }) {
-  const highlight = page.headingHighlight && page.heading.endsWith(page.headingHighlight) ? page.headingHighlight : undefined;
-  const eta = getLocationEta(page);
-  return (
-    <section className="location-hero relative overflow-hidden bg-midnight" aria-labelledby="location-hero-heading">
-      <div className="absolute inset-0" aria-hidden="true">
-        <img src={`${recoveryImage}&w=1920`} srcSet={`${recoveryImage}&w=900 900w, ${recoveryImage}&w=1920 1920w`} sizes="100vw" alt="" className="location-hero__image h-full w-full object-cover" fetchPriority="high" decoding="async" />
-        <div className="location-hero__shade absolute inset-0" />
-      </div>
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="location-hero__content">
-          <div className="location-hero__identifier">
-            <p className="location-hero__city"><MapPin className="h-5 w-5 shrink-0" aria-hidden="true" />{page.city}</p>
-            <p className="location-hero__service">{page.label}</p>
-          </div>
-          <h1 id="location-hero-heading" className="location-hero__heading">
-            {highlight ? <><span>{page.heading.slice(0, -highlight.length).trim()}</span>{' '}<span className="location-hero__highlight">{highlight}</span></> : page.heading}
-          </h1>
-          <p className="location-hero__summary">{page.summary}</p>
-          <LocationActions page={page} placement="hero" />
-          <ul className="location-hero__trust" aria-label="Booking reassurance">
-            {page.trust.map((feature, index) => (
-              <li key={feature}>
-                <span className={`location-hero__check location-hero__check--${index + 1}`} aria-hidden="true"><Check className="h-3.5 w-3.5" strokeWidth={2.5} /></span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-          {eta && (
-            <div className="location-hero__eta">
-              <Clock3 className="h-5 w-5 shrink-0 text-accent-light" aria-hidden="true" />
-              <span aria-describedby="location-hero-eta-note">{eta.minutes} MIN ETA*</span>
-              <small id="location-hero-eta-note">*{eta.qualification}</small>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+  return <RecoveryHero content={{ ...page, headingHighlight: page.headingHighlight ?? '' }} city={page.city} location={page.slug + '_hero'} eta={getLocationEta(page)} />;
 }
 
 function LocationCoverage({ page }: { page: LocationPageConfig }) {
@@ -139,6 +92,7 @@ export function LocationPage({ page }: { page: LocationPageConfig }) {
 
       <section aria-labelledby="location-services-heading" className="bg-midnight-2 py-12 lg:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Breadcrumbs path={getLocationPath(page)} />
           <p className="section-label">Recovery & transport</p>
           <h2 id="location-services-heading" className="heading-lg mt-3 break-words text-white">Help for your vehicle in {page.city}</h2>
           <div className="mt-7 grid gap-4 lg:grid-cols-[1.25fr_1fr_1fr]">
@@ -181,6 +135,7 @@ export function LocationPage({ page }: { page: LocationPageConfig }) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="heading-lg break-words text-white">Arranging recovery in {page.city}</h2>
           <p className="body-base mt-4 max-w-3xl">{page.introduction}</p>
+          <WhatsAppLink location={`${page.slug}_manual_quote`} message={page.whatsappMessage} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm text-accent-light underline underline-offset-4">WhatsApp for a Quote — enter your pickup manually</WhatsAppLink>
           <div className="mt-7 grid gap-5 lg:grid-cols-3">
             {page.details.map((detail) => (
               <div key={detail.heading} className="min-w-0">
@@ -208,11 +163,14 @@ export function LocationPage({ page }: { page: LocationPageConfig }) {
       <LocationCoverage page={page} />
       <LocationFAQs page={page} />
 
+      <AreaConnections areaId={page.slug} />
+
       <section className="bg-midnight-2 py-12 lg:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="heading-lg break-words text-white">Discuss your {page.city} recovery</h2>
           <p className="body-lg mt-4 max-w-xl">Tell us your pickup and destination. We’ll check availability and explain the quote before you book.</p>
           <LocationActions page={page} placement="final_cta" />
+          <WhatsAppLink location={`${page.slug}_final_manual_quote`} message={page.whatsappMessage} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm text-accent-light underline underline-offset-4">WhatsApp for a Quote — enter your pickup manually</WhatsAppLink>
           <p className="mt-6 text-sm text-text-muted">
             Read our{' '}
             <a href={businessConfig.termsUrl} className="text-accent-light underline underline-offset-4">booking terms</a>{' '}

@@ -71,6 +71,17 @@ export function buildWhatsAppRecoveryUrl(destination: string, location: PickupLo
   return buildWhatsAppMessageUrl(destination, message);
 }
 
+/** Explicit location actions have their own draft; generic contact drafts stay intact. */
+export function buildWhatsAppLocationUrl(destination: string, location: PickupLocation | null = null, city?: string): string {
+  const introduction = `Hi Teleport Recovery, I need vehicle recovery${city ? ` in ${city}` : ''}.`;
+  const general = new URL(buildWhatsAppRecoveryUrl(destination, location)).searchParams.get('text')!;
+  const map = general.match(/https:\/\/www\.google\.com\/maps\/search\/[^\n]+/)?.[0];
+  const message = map
+    ? `${introduction}\n\nPickup location:\n${map}\n\nDestination:\n\nVehicle:\n\nWhat happened:\n\nPlease let me know the available recovery option, price and estimated arrival time.`
+    : `${introduction}\n\nPickup location or postcode:\n\nDestination:\n\nVehicle:\n\nWhat happened:\n\nIf easier, I can share my vehicle's pin using WhatsApp's Location option.`;
+  return buildWhatsAppMessageUrl(destination, message);
+}
+
 /** Prefill only: opening WhatsApp never sends the customer's message automatically. */
 export function buildWhatsAppMessageUrl(destination: string, message: string): string {
   const url = new URL(destination);

@@ -4,6 +4,54 @@
 @tailwind components;
 @tailwind utilities;
 
+.nationwide-hero {
+  padding-top: calc(var(--site-header-height) + 2rem);
+  padding-bottom: 3rem;
+}
+.nationwide-hero__heading {
+  font-size: clamp(2.2rem, 9.5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  overflow-wrap: break-word;
+}
+.nationwide-hero__heading span { display: block; }
+.nationwide-hero__actions { display: grid; gap: 0.75rem; max-width: 42rem; }
+.nationwide-hero__actions > a { align-self: start; }
+.directory-intro { padding-top: calc(var(--site-header-height) + 2rem); padding-bottom: 3rem; }
+.directory-card {
+  display: block;
+  min-width: 0;
+  padding: 1.125rem;
+  border: 1px solid #392d49;
+  border-radius: 0.75rem;
+  background: rgb(36 26 50 / 0.4);
+  overflow-wrap: anywhere;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+.directory-card:hover { border-color: #a78bfa; background-color: #241a32; }
+.directory-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #392d49;
+  border-radius: 0.5rem;
+  color: #c4b5fd;
+  background: #191225;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.directory-chip:hover { border-color: #a78bfa; }
+.location-hero__trust li:nth-child(3) { grid-column: 1 / -1; justify-content: center; }
+.location-hero__trust li:nth-child(3) > span:last-child { max-width: none; }
+@media (min-width: 768px) {
+  .nationwide-hero { padding-top: calc(var(--site-header-height) + 4rem); padding-bottom: 4rem; }
+  .nationwide-hero__actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .directory-intro { padding-top: calc(var(--site-header-height) + 3rem); padding-bottom: 3.5rem; }
+}
+
 /* Location pages only: the nationwide hero and shared contact controls stay intact. */
 .location-hero {
   padding-top: calc(var(--site-header-height) + 1.5rem);
@@ -294,7 +342,8 @@
   a:focus-visible,
   button:focus-visible,
   input:focus-visible,
-  textarea:focus-visible {
+  textarea:focus-visible,
+  summary:focus-visible {
     @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-midnight rounded-sm;
   }
 }
@@ -336,14 +385,17 @@
   }
 
   .heading-xl {
+    overflow-wrap: break-word;
     @apply text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl;
   }
 
   .heading-lg {
+    overflow-wrap: break-word;
     @apply text-3xl font-bold leading-[1.15] tracking-tight sm:text-4xl lg:text-[2.75rem];
   }
 
   .heading-md {
+    overflow-wrap: break-word;
     @apply text-2xl font-semibold leading-tight tracking-tight sm:text-3xl;
   }
 
@@ -803,6 +855,114 @@
 }
 
 /* Custom scrollbar */
+/* V4.1: one urgent-contact system, with bounded marks and call-first emphasis. */
+.whatsapp-icon {
+  width: var(--whatsapp-icon-size, 20px);
+  height: var(--whatsapp-icon-size, 20px);
+  min-width: var(--whatsapp-icon-size, 20px);
+  flex: 0 0 var(--whatsapp-icon-size, 20px);
+  aspect-ratio: 1;
+}
+.recovery-contact-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  max-width: 44rem;
+}
+.recovery-contact-actions > .location-disclosure {
+  grid-column: 1 / -1;
+  max-width: 42rem;
+  margin-top: -0.125rem;
+}
+.recovery-action {
+  min-width: 0;
+  width: 100%;
+  min-height: 3.75rem;
+  padding: 0.875rem 0.75rem;
+  border-radius: 0.625rem;
+  gap: 0.625rem;
+  font-size: clamp(0.8125rem, 3.35vw, 0.9375rem);
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+.recovery-action > span { min-width: 0; overflow-wrap: break-word; }
+.recovery-action__icon { width: 20px; height: 20px; flex: 0 0 20px; }
+.recovery-action--call {
+  font-size: 1rem;
+  border: 1px solid rgb(229 220 255 / 0.5);
+  background: linear-gradient(110deg, #c4adff, #a78bfa);
+  color: #100b19;
+  box-shadow: 0 5px 24px rgb(167 139 250 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+.recovery-action--call:hover { background: #d1bcff; }
+.recovery-action.whatsapp-location-button { border-color: #80679c; background: rgb(25 18 37 / 0.88); color: #eee8f8; }
+.recovery-action.whatsapp-location-button:hover { border-color: #c4b5fd; background: #241a32; }
+.mobile-conversion-bar__actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.mobile-conversion-bar .recovery-action { min-height: 3.25rem; padding: 0.625rem 0.5rem; font-size: 0.8125rem; gap: 0.5rem; }
+.mobile-conversion-bar { --whatsapp-icon-size: 18px; }
+.mobile-conversion-bar .recovery-action__icon { width: 18px; height: 18px; flex-basis: 18px; }
+.recovery-hero {
+  padding-top: calc(var(--site-header-height) + 2rem);
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgb(167 139 250 / 0.25);
+}
+.recovery-hero__image { object-position: 62% center; }
+.recovery-hero__shade {
+  background: linear-gradient(0deg, #100b19 0%, rgb(16 11 25 / 0.82) 27%, rgb(16 11 25 / 0.28)),
+    linear-gradient(90deg, rgb(16 11 25 / 0.9), rgb(16 11 25 / 0.48));
+}
+.recovery-hero__content { max-width: 58rem; }
+.recovery-hero__eyebrow {
+  display: flex; align-items: center; gap: 0.625rem;
+  color: #d5c5ff; font-size: 0.6875rem; font-weight: 700;
+  line-height: 1.5; letter-spacing: 0.14em;
+}
+.recovery-hero__eyebrow > span { width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: #c4b5fd; box-shadow: 0 0 12px rgb(196 181 253 / 0.5); }
+.recovery-hero .recovery-hero__heading {
+  margin-top: 1.125rem; max-width: 16ch;
+  font-size: clamp(2.4rem, 10.7vw, 3.5rem);
+  font-weight: 700; line-height: 0.99; letter-spacing: -0.055em; color: #fff;
+  overflow-wrap: break-word;
+}
+.recovery-hero__heading > span { display: block; }
+.recovery-hero__highlight { margin-top: 0.12em; color: #cbb7ff; }
+.recovery-hero.recovery-hero--city .recovery-hero__heading { font-size: clamp(2rem, 8.7vw, 3rem); max-width: 20ch; }
+.recovery-hero__summary { margin-top: 1.25rem; max-width: 37rem; color: #e1dbe9; font-size: 0.9375rem; line-height: 1.6; }
+.recovery-hero .recovery-contact-actions { margin-top: 1.5rem; }
+.recovery-hero .recovery-action { min-height: 3.75rem; font-size: clamp(0.8125rem, 3.35vw, 0.9375rem); }
+.recovery-hero .recovery-action--call { font-size: 1rem; }
+.recovery-hero .recovery-hero__trust { margin-top: 1.125rem; max-width: 44rem; font-size: 0.75rem; gap: 0.75rem; }
+.recovery-hero .recovery-hero__trust li { min-height: 2rem; padding: 0; gap: 0.5rem; justify-content: center; }
+.recovery-hero .recovery-hero__trust li > span:last-child { max-width: none; }
+.recovery-hero .location-hero__check { width: 18px; height: 18px; }
+.recovery-hero .location-hero__eta { margin-top: 1rem; }
+@media (min-width: 640px) {
+  .recovery-contact-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .recovery-hero { padding-top: calc(var(--site-header-height) + 4.25rem); padding-bottom: 4.5rem; }
+  .recovery-hero .recovery-hero__heading { font-size: clamp(4.5rem, 6.1vw, 5.5rem); max-width: none; }
+  .recovery-hero.recovery-hero--city .recovery-hero__heading { font-size: clamp(4rem, 5.6vw, 5.25rem); max-width: 20ch; }
+  .recovery-hero__summary { font-size: 1.0625rem; }
+  .recovery-hero .recovery-action { min-height: 4rem; font-size: 0.9375rem; }
+  .recovery-hero__image { object-position: center; }
+  .recovery-hero__shade { background: linear-gradient(0deg, #100b19, rgb(16 11 25 / 0.18) 60%), linear-gradient(90deg, rgb(16 11 25 / 0.98), rgb(16 11 25 / 0.87) 40%, rgb(16 11 25 / 0.22)); }
+}
+@media (max-width: 639px) and (max-height: 740px) {
+  .recovery-hero { padding-top: calc(var(--site-header-height) + 1rem); }
+  .recovery-hero .recovery-hero__heading { font-size: clamp(2.1rem, 9.2vw, 2.75rem); margin-top: 0.875rem; }
+  .recovery-hero.recovery-hero--city .recovery-hero__heading { font-size: clamp(1.9rem, 8vw, 2.4rem); }
+  .recovery-hero__summary { margin-top: 1rem; }
+  .recovery-hero .recovery-contact-actions { margin-top: 1rem; }
+}
+@media (max-width: 359px) {
+  .mobile-conversion-bar .recovery-action { padding-inline: 0.375rem; gap: 0.375rem; font-size: 0.75rem; }
+}
+@media (forced-colors: active) {
+  .recovery-hero__highlight { color: CanvasText; }
+  .recovery-action { border: 1px solid ButtonText; }
+}
 ::-webkit-scrollbar {
   width: 10px;
 }
