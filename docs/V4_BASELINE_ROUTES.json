@@ -1,0 +1,868 @@
+[
+  {
+    "path": "/",
+    "title": "Teleport Recovery | UK Vehicle Recovery",
+    "description": "Stranded? We help arrange vehicle recovery across the UK. Call for breakdown recovery, roadside assistance, accident recovery and vehicle transportation. Tell us your location and we will help.",
+    "kind": "home",
+    "indexable": true,
+    "breadcrumbs": []
+  },
+  {
+    "path": "/terms",
+    "title": "Terms & Conditions | Teleport Recovery",
+    "description": "Read Teleport Recovery booking terms.",
+    "kind": "legal",
+    "key": "terms",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      }
+    ]
+  },
+  {
+    "path": "/guarantee",
+    "title": "Money-Back Guarantee | Teleport Recovery",
+    "description": "Read Teleport Recovery guarantee eligibility, exclusions and refund conditions.",
+    "kind": "legal",
+    "key": "guarantee",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      }
+    ]
+  },
+  {
+    "path": "/privacy",
+    "title": "Privacy Policy | Teleport Recovery",
+    "description": "How Teleport Recovery handles enquiries, location sharing and optional advertising measurement.",
+    "kind": "legal",
+    "key": "privacy",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      }
+    ]
+  },
+  {
+    "path": "/areas",
+    "title": "UK Vehicle Recovery Areas | Teleport Recovery",
+    "description": "Browse vehicle recovery enquiry areas by region, town and city. Share your pickup and destination to check suitable operator availability.",
+    "kind": "areas",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/london",
+    "title": "Vehicle Recovery in London & Greater London | Teleport Recovery",
+    "description": "Include the borough, street, parking location and any height or controlled-access restrictions. A London postcode alone may not identify the correct entrance. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "london",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "London & Greater London",
+        "href": "/areas/regions/london"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/east-of-england",
+    "title": "Vehicle Recovery in East of England | Teleport Recovery",
+    "description": "Tell us whether the pickup is in a town, on a trunk road or at a rural address. Include the destination and access for loading before agreeing a collection. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "east-of-england",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/south-east",
+    "title": "Vehicle Recovery in South East England | Teleport Recovery",
+    "description": "For journeys between towns or towards London, give both postcodes. Ferry, port and restricted-site collections need access and release arrangements checked in advance. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "south-east",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "South East England",
+        "href": "/areas/regions/south-east"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/south-west",
+    "title": "Vehicle Recovery in South West England | Teleport Recovery",
+    "description": "Longer distances and rural access can affect the available recovery option. Describe narrow approaches, parking and whether the vehicle can roll or steer. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "south-west",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "South West England",
+        "href": "/areas/regions/south-west"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/east-midlands",
+    "title": "Vehicle Recovery in East Midlands | Teleport Recovery",
+    "description": "Distinguish town-centre pickups, industrial estates and motorway incidents. Give the road, direction and safe stopping point where relevant. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "east-midlands",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East Midlands",
+        "href": "/areas/regions/east-midlands"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/west-midlands",
+    "title": "Vehicle Recovery in West Midlands | Teleport Recovery",
+    "description": "Tell us the exact pickup town and entrance, especially for cross-city journeys. Equipment and access are checked with an independent operator. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "west-midlands",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "West Midlands",
+        "href": "/areas/regions/west-midlands"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/yorkshire-and-the-humber",
+    "title": "Vehicle Recovery in Yorkshire and the Humber | Teleport Recovery",
+    "description": "Include the destination town as well as the pickup. Urban parking restrictions, rural approaches and longer journeys need different loading and access checks. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "yorkshire-and-the-humber",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Yorkshire and the Humber",
+        "href": "/areas/regions/yorkshire-and-the-humber"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/north-west",
+    "title": "Vehicle Recovery in North West England | Teleport Recovery",
+    "description": "Name the town or city rather than just the nearest motorway. For a carriageway pickup, provide direction, junction and your safe stopping location. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "north-west",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "North West England",
+        "href": "/areas/regions/north-west"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/north-east",
+    "title": "Vehicle Recovery in North East England | Teleport Recovery",
+    "description": "Give a postcode or recognisable road reference and the destination. Confirm whether the vehicle is on private land or a public road so access can be assessed. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "north-east",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "North East England",
+        "href": "/areas/regions/north-east"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/wales",
+    "title": "Vehicle Recovery in Wales | Teleport Recovery",
+    "description": "Describe the pickup approach and destination, including any narrow lanes or restricted parking. Rural distance and equipment requirements affect availability. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "wales",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Wales",
+        "href": "/areas/regions/wales"
+      }
+    ]
+  },
+  {
+    "path": "/areas/regions/scotland",
+    "title": "Vehicle Recovery in Scotland | Teleport Recovery",
+    "description": "Availability for long-distance, remote and island journeys requires an individual check. Tell us about ferry requirements or restricted access before requesting a quote. Contact Teleport for availability and a quote.",
+    "kind": "region",
+    "key": "scotland",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Scotland",
+        "href": "/areas/regions/scotland"
+      }
+    ]
+  },
+  {
+    "path": "/recovery/birmingham",
+    "title": "Emergency Car Recovery Birmingham | Teleport Recovery",
+    "description": "Need car or breakdown recovery in Birmingham? Contact Teleport Recovery for an upfront quote, availability and an estimated arrival time. Scheduled transport also available.",
+    "kind": "location",
+    "key": "birmingham",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "West Midlands",
+        "href": "/areas/regions/west-midlands"
+      },
+      {
+        "name": "Birmingham",
+        "href": "/recovery/birmingham"
+      }
+    ]
+  },
+  {
+    "path": "/areas/london",
+    "title": "Vehicle Recovery London | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in London. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "london",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "London & Greater London",
+        "href": "/areas/regions/london"
+      },
+      {
+        "name": "London",
+        "href": "/areas/london"
+      }
+    ]
+  },
+  {
+    "path": "/areas/bedford",
+    "title": "Vehicle Recovery Bedford | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Bedford. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "bedford",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      },
+      {
+        "name": "Bedford",
+        "href": "/areas/bedford"
+      }
+    ]
+  },
+  {
+    "path": "/areas/kempston",
+    "title": "Vehicle Recovery Kempston | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Kempston. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "kempston",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      },
+      {
+        "name": "Kempston",
+        "href": "/areas/kempston"
+      }
+    ]
+  },
+  {
+    "path": "/areas/luton",
+    "title": "Vehicle Recovery Luton | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Luton. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "luton",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      },
+      {
+        "name": "Luton",
+        "href": "/areas/luton"
+      }
+    ]
+  },
+  {
+    "path": "/areas/dunstable",
+    "title": "Vehicle Recovery Dunstable | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Dunstable. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "dunstable",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      },
+      {
+        "name": "Dunstable",
+        "href": "/areas/dunstable"
+      }
+    ]
+  },
+  {
+    "path": "/areas/cambridge",
+    "title": "Vehicle Recovery Cambridge | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Cambridge. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "cambridge",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East of England",
+        "href": "/areas/regions/east-of-england"
+      },
+      {
+        "name": "Cambridge",
+        "href": "/areas/cambridge"
+      }
+    ]
+  },
+  {
+    "path": "/areas/milton-keynes",
+    "title": "Vehicle Recovery Milton Keynes | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Milton Keynes. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "milton-keynes",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "South East England",
+        "href": "/areas/regions/south-east"
+      },
+      {
+        "name": "Milton Keynes",
+        "href": "/areas/milton-keynes"
+      }
+    ]
+  },
+  {
+    "path": "/areas/bristol",
+    "title": "Vehicle Recovery Bristol | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Bristol. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "bristol",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "South West England",
+        "href": "/areas/regions/south-west"
+      },
+      {
+        "name": "Bristol",
+        "href": "/areas/bristol"
+      }
+    ]
+  },
+  {
+    "path": "/areas/northampton",
+    "title": "Vehicle Recovery Northampton | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Northampton. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "northampton",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "East Midlands",
+        "href": "/areas/regions/east-midlands"
+      },
+      {
+        "name": "Northampton",
+        "href": "/areas/northampton"
+      }
+    ]
+  },
+  {
+    "path": "/areas/manchester",
+    "title": "Vehicle Recovery Manchester | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Manchester. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "manchester",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "North West England",
+        "href": "/areas/regions/north-west"
+      },
+      {
+        "name": "Manchester",
+        "href": "/areas/manchester"
+      }
+    ]
+  },
+  {
+    "path": "/areas/cardiff",
+    "title": "Vehicle Recovery Cardiff | Quotes & Availability | Teleport Recovery",
+    "description": "Check vehicle recovery in Cardiff. Share the pickup, vehicle condition and destination for suitable operator availability, an upfront quote and an arrival estimate.",
+    "kind": "location",
+    "key": "cardiff",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Wales",
+        "href": "/areas/regions/wales"
+      },
+      {
+        "name": "Cardiff",
+        "href": "/areas/cardiff"
+      }
+    ]
+  },
+  {
+    "path": "/services",
+    "title": "Vehicle Recovery Services | Teleport Recovery",
+    "description": "Explore breakdown recovery, non-runner collection, transport, garage delivery and other recovery enquiries. Suitability and availability checked before booking.",
+    "kind": "services",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      }
+    ]
+  },
+  {
+    "path": "/services/breakdown-recovery",
+    "title": "Breakdown Recovery & Car Towing | Teleport Recovery",
+    "description": "When your journey stops, discuss a suitable recovery option and destination before booking.",
+    "kind": "service",
+    "key": "breakdown-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Breakdown Recovery & Car Towing",
+        "href": "/services/breakdown-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/services/non-runner-recovery",
+    "title": "Non-Running Vehicle Recovery | Teleport Recovery",
+    "description": "Arrange an assessment for a car that will not start, roll or steer normally.",
+    "kind": "service",
+    "key": "non-runner-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Non-Running Vehicle Recovery",
+        "href": "/services/non-runner-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/services/vehicle-transport",
+    "title": "Scheduled Vehicle Transport | Teleport Recovery",
+    "description": "Plan a vehicle collection and delivery between agreed locations.",
+    "kind": "service",
+    "key": "vehicle-transport",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Scheduled Vehicle Transport",
+        "href": "/services/vehicle-transport"
+      }
+    ]
+  },
+  {
+    "path": "/services/accident-recovery",
+    "title": "Accident Recovery Enquiries | Teleport Recovery",
+    "description": "Once immediate safety and emergency needs are addressed, discuss recovery of a damaged vehicle.",
+    "kind": "service",
+    "key": "accident-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Accident Recovery Enquiries",
+        "href": "/services/accident-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/services/van-recovery",
+    "title": "Light Van Recovery Enquiries | Teleport Recovery",
+    "description": "Check whether a suitable operator can recover your light-commercial vehicle.",
+    "kind": "service",
+    "key": "van-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Light Van Recovery Enquiries",
+        "href": "/services/van-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/services/motorway-recovery",
+    "title": "Motorway Breakdown Recovery | Teleport Recovery",
+    "description": "Prioritise safety, identify your stopping location and check the appropriate recovery route.",
+    "kind": "service",
+    "key": "motorway-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Motorway Breakdown Recovery",
+        "href": "/services/motorway-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/services/garage-delivery",
+    "title": "Recovery to a Garage | Teleport Recovery",
+    "description": "Coordinate collection and delivery with the garage that will receive your vehicle.",
+    "kind": "service",
+    "key": "garage-delivery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Recovery to a Garage",
+        "href": "/services/garage-delivery"
+      }
+    ]
+  },
+  {
+    "path": "/services/auction-collections",
+    "title": "Auction Vehicle Collections | Teleport Recovery",
+    "description": "Check collection, release and delivery arrangements for a suitable auction vehicle.",
+    "kind": "service",
+    "key": "auction-collections",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Services",
+        "href": "/services"
+      },
+      {
+        "name": "Auction Vehicle Collections",
+        "href": "/services/auction-collections"
+      }
+    ]
+  },
+  {
+    "path": "/recovery/milton-keynes/breakdown-recovery",
+    "title": "Breakdown Recovery in Milton Keynes | Teleport Recovery",
+    "description": "A grid-road or roundabout reference helps identify a Milton Keynes breakdown, but dispatch also needs the direction, vehicle condition and destination. This page brings those pickup checks together for an unplanned journey stop.",
+    "kind": "city-service",
+    "key": "milton-keynes/breakdown-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Milton Keynes",
+        "href": "/areas/milton-keynes"
+      },
+      {
+        "name": "Breakdown Recovery & Car Towing",
+        "href": "/recovery/milton-keynes/breakdown-recovery"
+      }
+    ]
+  },
+  {
+    "path": "/recovery/bedford/non-runner-recovery",
+    "title": "Non-Running Car Recovery in Bedford | Teleport Recovery",
+    "description": "For a Bedford non-runner, loading access can matter more than how far it needs to travel. A driveway, central car park and a garage forecourt present different collection conditions even when they share a nearby postcode.",
+    "kind": "city-service",
+    "key": "bedford/non-runner-recovery",
+    "indexable": true,
+    "breadcrumbs": [
+      {
+        "name": "Home",
+        "href": "/"
+      },
+      {
+        "name": "Recovery areas",
+        "href": "/areas"
+      },
+      {
+        "name": "Bedford",
+        "href": "/areas/bedford"
+      },
+      {
+        "name": "Non-Running Vehicle Recovery",
+        "href": "/recovery/bedford/non-runner-recovery"
+      }
+    ]
+  }
+]

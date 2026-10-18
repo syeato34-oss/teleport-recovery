@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { businessConfig } from '@/config/business';
 import { buildWhatsAppMessageUrl, buildWhatsAppRecoveryUrl, getWhatsAppDestination } from '@/lib/whatsapp';
 import { trackEvent } from '@/lib/tracking';
@@ -19,7 +19,7 @@ export function WhatsAppLink({ location, message, onClick, children = 'WhatsApp 
         onClick?.(event);
       }}
     >
-      <MessageCircle className="h-5 w-5 shrink-0 text-accent-light" aria-hidden="true" />
+      <WhatsAppIcon className="text-accent-light" />
       <span className="min-w-0 break-words">{children}</span>
     </a>
   );

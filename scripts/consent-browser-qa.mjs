@@ -49,11 +49,16 @@ async function noAdvertising(page, traffic) {
 async function checkCoreLinks(page, route) {
   const phone = page.locator('main a[href^="tel:"]').first();
   const whatsapp = page.locator('main a[href*="wa.me"]').first();
+  assert.equal(await page.locator('main .whatsapp-location-button').first().isEnabled(), true);
+  assert.equal(await page.locator('.mobile-conversion-bar .whatsapp-location-button').isEnabled(), true);
   assert.equal(await phone.getAttribute('href'), 'tel:+441234900700');
-  const wa = new URL(await whatsapp.getAttribute('href'));
-  assert.equal(wa.origin + wa.pathname, 'https://wa.me/447827079669');
-  assert.equal(wa.searchParams.get('text').includes('in Birmingham'), route.includes('birmingham'));
-  for (const link of [phone, whatsapp]) {
+  const hasManualQuote = await whatsapp.count() > 0;
+  if (hasManualQuote) {
+    const wa = new URL(await whatsapp.getAttribute('href'));
+    assert.equal(wa.origin + wa.pathname, 'https://wa.me/447827079669');
+    assert.equal(wa.searchParams.get('text').includes('in Birmingham'), route.includes('birmingham'));
+  }
+  for (const link of hasManualQuote ? [phone, whatsapp] : [phone]) {
     await link.evaluate((element) => element.addEventListener('click', (event) => event.preventDefault(), { once: true }));
     await link.click();
   }

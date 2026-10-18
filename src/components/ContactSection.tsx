@@ -4,7 +4,7 @@ import { Phone, Send, CheckCircle2 } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { CALLBACK_FORM_NAME, isCallbackPhoneValid, submitCallback } from '@/lib/callback';
 import { trackEvent } from '@/lib/tracking';
-import { WhatsAppLink } from '@/components/WhatsAppLink';
+import { RecoveryContactActions } from '@/components/RecoveryContactActions';
 
 export function CallbackSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -217,25 +217,7 @@ export function ContactSection() {
               Call or WhatsApp with your pickup location and destination — we’ll confirm the price and ETA.
             </p>
           </div>
-          <div className="space-y-3">
-            <CallLink location="final_cta"
-              aria-label={`Call now ${businessConfig.phoneDisplay} — ${businessConfig.tradingName}`}
-              className="btn-primary w-full justify-start rounded-xl px-5 py-5 sm:px-6"
-            >
-              <span className="flex min-w-0 items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-midnight/10 text-midnight">
-                  <Phone className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-xs uppercase tracking-[0.15em] text-midnight/80">Call now</span>
-                  <span className="block text-[clamp(1.5rem,6.5vw,2.25rem)] font-extrabold leading-tight tracking-tight text-midnight sm:text-4xl xl:text-[2.75rem]">
-                    <PhoneNumber />
-                  </span>
-                </span>
-              </span>
-            </CallLink>
-            <WhatsAppLink location="final_cta" className="btn-secondary min-h-[58px] w-full rounded-xl px-5 text-base font-semibold" />
-          </div>
+          <RecoveryContactActions location="final_cta" />
         </div>
       </div>
     </section>

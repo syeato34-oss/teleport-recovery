@@ -3,19 +3,12 @@ import react from '@vitejs/plugin-react';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, URL } from 'node:url';
 import { businessConfig } from './src/config/business';
-import { getLocationPage, getLocationPath, locationPages } from './src/config/locations';
+import { getSiteRoute, siteRoutes, structuredData } from './src/config/routes';
 
 const socialImage =
   'https://images.pexels.com/photos/17429097/pexels-photo-17429097.jpeg?auto=compress&cs=tinysrgb&w=1200';
 
-const organization = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: businessConfig.tradingName,
-  url: businessConfig.websiteUrl,
-  telephone: businessConfig.phoneTel,
-  logo: `${businessConfig.websiteUrl}/brand/tpr-mark.svg`,
-}).replace(/</g, '\\u003c');
+const organization = structuredData();
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => {
@@ -34,11 +27,7 @@ const homeMetadata: PageMetadata = {
   description: businessConfig.metaDescription,
 };
 
-const locationMetadata: PageMetadata[] = locationPages.map((page) => ({
-  path: getLocationPath(page),
-  title: page.metaTitle,
-  description: page.metaDescription,
-}));
+const locationMetadata: PageMetadata[] = siteRoutes.filter((route) => !['home', 'legal'].includes(route.kind)).map((route) => ({ path: route.path, title: route.title, description: route.description, noindex: !route.indexable }));
 
 const legalMetadata: PageMetadata[] = [
   {
@@ -87,7 +76,7 @@ function metadataBlock(page: PageMetadata, preview: boolean) {
     <meta name="twitter:description" content="${description}" />
     <meta name="twitter:image" content="${escapeHtml(socialImage)}" />
     <meta name="twitter:image:alt" content="Recovery truck loading a vehicle on the roadside" />
-    <script type="application/ld+json">${organization}</script>
+    <script type="application/ld+json">${structuredData(getSiteRoute(page.path))}</script>
     <!-- site-metadata:end -->`;
 }
 
@@ -102,10 +91,10 @@ function productionPages(): Plugin {
       order: 'pre',
       handler(html, context) {
         const location = context.originalUrl
-          ? getLocationPage(new URL(context.originalUrl, 'http://localhost').pathname)
+          ? getSiteRoute(new URL(context.originalUrl, 'http://localhost').pathname)
           : undefined;
         const page: PageMetadata = location
-          ? { path: getLocationPath(location), title: location.metaTitle, description: location.metaDescription }
+          ? { path: location.path, title: location.title, description: location.description }
           : homeMetadata;
         return html
           .replace('<!-- business-metadata -->', metadataBlock(page, preview))
@@ -156,10 +145,10 @@ function productionPages(): Plugin {
       });
 
       // The JSON-LD is the sole inline script; hash it without weakening script-src.
-      const jsonLdHash = createHash('sha256').update(organization).digest('base64');
+      const jsonLdHash = [...new Set([organization, ...siteRoutes.map((route) => structuredData(route))])].map((json) => "'sha256-" + createHash('sha256').update(json).digest('base64') + "'").join(' ');
       const csp = [
         "default-src 'self'",
-        `script-src 'self' 'sha256-${jsonLdHash}' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://www.gstatic.com/wcm/ https://www.gstatic.com/call-tracking/`,
+        `script-src 'self' ${jsonLdHash} https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://www.gstatic.com/wcm/ https://www.gstatic.com/call-tracking/`,
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data: https://images.pexels.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://www.google.com https://www.google.co.uk",

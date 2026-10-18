@@ -1,6 +1,7 @@
 import { CallLink } from '@/components/CallLink';
 import { services } from '@/config/services';
 import { Phone } from 'lucide-react';
+import { recoveryServices, getServicePath } from '@/config/recoveryServices';
 
 export function Services() {
   return (
@@ -30,6 +31,8 @@ export function Services() {
         </div>
 
         {/* CTA */}
+        <nav aria-label="Detailed recovery services" className="mt-7 flex flex-wrap gap-3">{recoveryServices.map((service) => <a className="directory-chip" href={getServicePath(service)} key={service.id}>{service.name}</a>)}</nav>
+        <p className="mt-6"><a href="/advice" className="inline-flex min-h-11 items-center text-accent-light underline underline-offset-4">Recovery advice & pickup guides</a></p>
         <div className="mt-12 flex flex-col items-start gap-4 rounded-xl border border-divider bg-panel/30 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-base font-semibold text-white">Not sure which service you need?</p>

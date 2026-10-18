@@ -218,7 +218,7 @@ function PrivacyNotice() {
           pickup location and other recovery details yourself.
         </p>
         <p>
-          Selecting &quot;Share My Location on WhatsApp&quot; requests your location using your
+          Selecting &quot;Send location on WhatsApp&quot; requests your location using your
           browser&apos;s permission controls. If a usable location is available, your coordinates
           are used to create a Google Maps pickup link in the draft.
         </p>

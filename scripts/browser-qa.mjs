@@ -66,7 +66,7 @@ async function clickWithoutCalling(selector) {
 async function fillCallback() {
   await page.getByLabel('Your name', { exact: true }).fill('QA visitor');
   await page.getByLabel('Phone number', { exact: true }).fill('01234 900 700');
-  await page.getByLabel('Your location').fill('QA location');
+  await page.getByRole('textbox', { name: 'Your location (optional)', exact: true }).fill('QA location');
   await page.getByLabel('What happened?').fill('QA request; intercepted locally and never delivered.');
 }
 
@@ -77,8 +77,9 @@ try {
     assert.equal(response.status(), 200);
     const metrics = await verifyLayout(`${width}x${height}`);
     assert.equal(await page.locator('#top img').evaluate((img) => img.naturalWidth > 0), true, 'Hero image must load');
-    const text = await page.locator('body').innerText();
-    assert.ok(text.includes('45 MIN AVERAGE ETA*'));
+    const text = (await page.locator('body').innerText()).replace(/\s+/g, ' ');
+    assert.ok(text.includes('BROKEN DOWN? GET RECOVERY NOW.'));
+    assert.ok(!text.includes('45 MIN AVERAGE ETA*'));
     assert.ok(text.includes('01234 900 700'));
     assert.equal(await page.locator('a[href^="mailto:"]').count(), 0);
     for (const href of await page.locator('a[href*="wa.me"]').evaluateAll((links) => links.map((link) => link.href))) {
@@ -90,7 +91,7 @@ try {
     assert.equal(await page.locator('#callback form:not([inert])').count(), 1);
     assert.equal(await page.locator('#contact form').count(), 0);
     assert.deepEqual(await page.locator('main > section[id]').evaluateAll((sections) => sections.map((section) => section.id)),
-      ['top', 'coverage', 'services', 'how-it-works', 'trust', 'callback', 'faqs', 'contact']);
+      ['top', 'pickup', 'coverage', 'services', 'how-it-works', 'trust', 'callback', 'faqs', 'contact']);
     await page.screenshot({ path: resolve(artifacts, `home-${width}x${height}.png`), fullPage: true });
     for (const section of ['coverage', 'callback', 'faqs', 'contact']) {
       await page.locator(`#${section}`).scrollIntoViewIfNeeded();
@@ -109,11 +110,11 @@ try {
   await clickWithoutCalling('header a[href^="tel:"]');
   await clickWithoutCalling('#top .hero-call-cta');
   await clickWithoutCalling('footer a[href^="tel:"]');
-  await page.locator('#top a').filter({ hasText: 'Terms apply.' }).click();
+  await page.locator('footer a[href="/guarantee"]').first().click();
   await page.waitForURL('**/guarantee');
   assert.equal(await page.locator('h1').innerText(), 'Money-Back Guarantee');
   assert.equal(await page.evaluate(() => window.dataLayer.filter((event) => event.event === 'guarantee_terms_view').length), 1);
-  results.interactions.push('Hero guarantee summary opens full policy and emits one view event');
+  results.interactions.push('Footer guarantee link opens full policy and emits one view event');
 
   await visit();
   const guaranteeButton = page.getByRole('button', { name: 'What is the money-back guarantee?' });
@@ -156,27 +157,31 @@ try {
   assert.equal(await mobileMenu.getAttribute('aria-expanded'), 'false');
   assert.ok(await mobileMenu.evaluate((button) => document.activeElement === button));
   await clickWithoutCalling('#top .hero-call-cta');
-  assert.equal(await page.locator('#top .hero-call-cta').innerText(), 'Call 01234 900 700');
+  assert.equal(await page.locator('#top .hero-call-cta').innerText(), 'CALL 01234 900 700');
   results.interactions.push('Mobile menu Escape returns focus; numbered Call CTA works');
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  assert.equal(await page.locator('.hero-background-motion').evaluate((image) => getComputedStyle(image).animationName), 'none');
+  assert.equal(await page.locator('#top img').evaluate((image) => getComputedStyle(image).animationName), 'none');
   assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), 'auto');
   results.interactions.push('Reduced motion removes hero motion and smooth scrolling');
 
-  for (const [selector, source] of [['#top a[href*="wa.me"]', 'hero'], ['div.fixed.inset-x-0.bottom-0 a[href*="wa.me"]', 'sticky_mobile'], ['#contact a[href*="wa.me"]', 'final_cta']]) {
-    const link = page.locator(selector);
-    assert.equal(await link.getAttribute('target'), null, 'General WhatsApp uses the same tab');
-    await link.evaluate((element) => element.addEventListener('click', (event) => event.preventDefault(), { once: true }));
-    await link.click();
-    assert.deepEqual(await page.evaluate(() => window.dataLayer.at(-1)), { event: 'whatsapp_click', location: source });
-    assert.equal(await page.evaluate(() => window.qaGpsCalls), 0, 'General WhatsApp must never request GPS');
-  }
-  results.interactions.push('Hero, sticky and final WhatsApp: canonical same-tab drafts, no GPS, source-only events');
+  assert.equal(await page.locator('.mobile-conversion-bar').getByRole('button', { name: 'Send location on WhatsApp' }).isEnabled(), true);
+  assert.equal(await page.evaluate(() => window.qaGpsCalls), 0);
+  results.interactions.push('Sticky location action is available and requests no location on load');
 
-  for (const scenario of ['success', 'denied', 'unavailable', 'timeout', 'unsupported', 'coarse', 'deadline', 'duplicate']) {
+  for (const { scenario, selector, source, city, consent } of [
+    ...['success', 'denied', 'unavailable', 'timeout', 'unsupported', 'coarse', 'deadline', 'duplicate'].map((scenario) => ({ scenario, selector: '#pickup', source: 'coverage_location' })),
+    { scenario: 'success', selector: '#top', source: 'hero_location' },
+    { scenario: 'denied', selector: '#contact', source: 'final_cta_location' },
+    { scenario: 'success', selector: '.location-hero', source: 'birmingham_hero_location', city: 'Birmingham' },
+    { scenario: 'success', selector: '.location-hero', source: 'milton-keynes_hero_location', city: 'Milton Keynes' },
+    { scenario: 'success', selector: '.mobile-conversion-bar', source: 'sticky_mobile' },
+    { scenario: 'denied', selector: '.mobile-conversion-bar', source: 'sticky_mobile', consent: 'rejected' },
+    { scenario: 'success', selector: '.mobile-conversion-bar', source: 'sticky_mobile', consent: 'fresh' },
+  ]) {
     const gpsContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-    await consentedFunctionalContext(gpsContext);
+    if (!consent) await consentedFunctionalContext(gpsContext);
+    else if (consent === 'rejected') await gpsContext.addInitScript(() => localStorage.setItem('teleport-advertising-consent', JSON.stringify({ version: 1, choice: 'rejected', updatedAt: Date.now() })));
     let snapshot;
     await gpsContext.exposeBinding('qaCapture', (_source, value) => { snapshot = value; });
     await gpsContext.addInitScript((scenario) => {
@@ -212,9 +217,9 @@ try {
       handoff = route.request().url();
       await route.fulfill({ status: 200, contentType: 'text/html', body: '<p>Intercepted QA handoff.</p>' });
     });
-    await gpsPage.goto(origin, { waitUntil: 'networkidle' });
+    await gpsPage.goto(origin + (city === 'Birmingham' ? '/recovery/birmingham' : city ? '/areas/milton-keynes' : '/'), { waitUntil: 'networkidle' });
     assert.equal(await gpsPage.evaluate(() => window.qaGps.calls), 0, 'No GPS on page load');
-    const locationButton = gpsPage.getByRole('button', { name: 'Share My Location on WhatsApp', exact: true });
+    const locationButton = gpsPage.locator(selector).getByRole('button', { name: 'Send location on WhatsApp', exact: true });
     await locationButton.scrollIntoViewIfNeeded();
     const navigation = gpsPage.waitForURL('https://wa.me/**');
     if (scenario === 'duplicate') await locationButton.evaluate((button) => { button.click(); button.click(); });
@@ -223,17 +228,18 @@ try {
     const url = new URL(handoff);
     assert.equal(url.origin + url.pathname, 'https://wa.me/447827079669');
     const message = url.searchParams.get('text');
+    if (city) assert.ok(message.includes(`in ${city}`));
     assert.equal(message.includes('https://www.google.com/maps/search/'), ['success', 'duplicate'].includes(scenario));
     if (['success', 'duplicate'].includes(scenario)) assert.ok(message.includes('query=52.123456%2C-0.56789'));
-    else assert.ok(message.includes('Pickup:\n\nDestination:'));
+    else assert.ok(message.includes('Pickup location or postcode:\n\nDestination:'));
     assert.deepEqual([...url.searchParams.keys()], ['text'], 'Draft only; no automatic send parameters');
     assert.equal(snapshot.gps.calls, scenario === 'unsupported' ? 0 : 1);
     if (snapshot.gps.calls) assert.deepEqual(snapshot.gps.options, { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 });
-    assert.deepEqual(snapshot.events, [{ event: 'whatsapp_click', location: 'coverage_location' }]);
-    assert.deepEqual(Object.keys(snapshot.local), ['teleport-advertising-consent']);
-    assert.equal(JSON.parse(snapshot.local['teleport-advertising-consent']).choice, 'accepted');
+    assert.deepEqual(snapshot.events, consent ? [] : [{ event: 'whatsapp_click', location: source }]);
+    assert.deepEqual(Object.keys(snapshot.local), consent === 'fresh' ? [] : ['teleport-advertising-consent']);
+    if (consent !== 'fresh') assert.equal(JSON.parse(snapshot.local['teleport-advertising-consent']).choice, consent === 'rejected' ? 'rejected' : 'accepted');
     assert.deepEqual(snapshot.session, {});
-    results.interactions.push(`Location ${scenario}: bounded explicit request, same-tab manual draft, no storage or personal tracking data`);
+    results.interactions.push(`Location ${source} ${scenario}: bounded explicit request, same-tab manual draft, no storage or personal tracking data`);
     await gpsContext.close();
   }
 

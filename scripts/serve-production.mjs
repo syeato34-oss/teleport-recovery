@@ -2,7 +2,7 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
-import canonicalBirmingham from '../netlify/edge-functions/canonical-birmingham.js';
+import canonicalPages from '../netlify/edge-functions/canonical-pages.js';
 
 const root = resolve('dist');
 const headersFile = await readFile(resolve(root, '_headers'), 'utf8');
@@ -24,7 +24,7 @@ createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
     // Execute the same handler as Netlify; filesystem fallback alone cannot test a 301.
-    const redirect = canonicalBirmingham(new Request(url, { method: request.method }));
+    const redirect = canonicalPages(new Request(url, { method: request.method }));
     if (redirect) {
       response.writeHead(redirect.status, Object.fromEntries(redirect.headers));
       response.end();

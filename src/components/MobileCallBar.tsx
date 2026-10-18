@@ -2,13 +2,13 @@ import { CallLink } from '@/components/CallLink';
 import { Phone } from 'lucide-react';
 import { businessConfig } from '@/config/business';
 import { useEffect, useRef } from 'react';
-import { WhatsAppLink } from '@/components/WhatsAppLink';
+import { WhatsAppLocationButton } from '@/components/WhatsAppLocationButton';
 
 /**
  * Fixed call-first conversion bar visible on mobile only.
  * Its measured height reserves scrolling space for keyboard focus and the footer.
  */
-export function MobileCallBar({ whatsappMessage }: { whatsappMessage?: string }) {
+export function MobileCallBar({ city }: { city?: string }) {
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,20 +33,20 @@ export function MobileCallBar({ whatsappMessage }: { whatsappMessage?: string })
 
   return (
     <div ref={barRef} className="mobile-conversion-bar fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,8rem),1fr))] gap-[12px] bg-midnight/95 border-t border-divider backdrop-blur-md px-[16px] py-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]">
+      <div className="mobile-conversion-bar__actions bg-midnight/95 border-t border-divider backdrop-blur-md px-[16px] py-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]">
         <CallLink location="mobilecallbar"
-          className="btn-primary min-w-0 px-3 text-base"
+          className="btn-primary recovery-action recovery-action--call min-w-0"
           aria-label={`Call Now — ${businessConfig.tradingName} on ${businessConfig.phoneDisplay}`}
         >
-          <Phone className="h-5 w-5 shrink-0" aria-hidden="true" />
-          <span className="min-w-0">Call Now</span>
+          <Phone className="recovery-action__icon" aria-hidden="true" />
+          <span className="min-w-0">CALL NOW</span>
         </CallLink>
-        <WhatsAppLink
+        <WhatsAppLocationButton
           location="sticky_mobile"
-          message={whatsappMessage}
-          className="btn-secondary min-w-0 px-3 text-base"
-          aria-label={`WhatsApp — Message ${businessConfig.tradingName}`}
-        >WhatsApp</WhatsAppLink>
+          city={city}
+          variant="sticky"
+          className="recovery-action min-w-0"
+        />
       </div>
     </div>
   );

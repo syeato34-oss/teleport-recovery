@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
 const origin = process.env.QA_URL ?? 'http://127.0.0.1:4173';
 const live = new URL(origin).hostname === 'teleportrecovery.co.uk';
-const output = resolve('qa-artifacts/launch-audit');
+const output = resolve(process.env.QA_ARTIFACT_DIR ?? 'qa-artifacts/launch-audit');
 await mkdir(output, { recursive: true });
 const results = { origin, at: new Date().toISOString(), result: 'running', mode: live ? 'Live fallback/contact UI, Google isolated' : 'Local production + simulated Google callback', pages: [], callbacks: [], navigation: [], errors: [] };
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
@@ -130,7 +130,7 @@ try {
     const marker = await page.evaluate(() => { window.qaRealmMarker = Math.random(); return window.qaRealmMarker; });
     for (const path of ['/recovery/birmingham', '/', '/privacy', '/recovery/birmingham']) {
       await page.evaluate((path) => window.qaRenderRoute(path), path);
-      await page.waitForFunction((path) => location.pathname === path && (path !== '/recovery/birmingham' || document.querySelector('h1')?.textContent.includes('Broken Down in Birmingham')), path);
+      await page.waitForFunction((path) => location.pathname === path && (path !== '/recovery/birmingham' || document.querySelector('h1')?.textContent.includes('BROKEN DOWN IN BIRMINGHAM')), path);
       await assertPhones(page, fictional);
       assert.equal(await page.evaluate(() => window.qaRealmMarker), marker);
     }
@@ -148,7 +148,7 @@ try {
   await assertPhones(page, fallback); // new document, Google has not supplied a number in this mock
   if (!live) await googleCallback(page);
   await page.goBack({ waitUntil: 'networkidle' });
-  assert.ok((await page.locator('h1').innerText()).includes('Broken Down in Birmingham'));
+  assert.ok((await page.locator('h1').innerText()).includes('BROKEN DOWN IN BIRMINGHAM'));
   const restoredHref = (await inventory(page))[0].href;
   await assertPhones(page, restoredHref); // BFCache preserves valid state; a new document starts safely.
   if (!live) await googleCallback(page);

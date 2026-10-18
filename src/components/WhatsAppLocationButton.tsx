@@ -1,15 +1,18 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { businessConfig } from '@/config/business';
 import { trackEvent } from '@/lib/tracking';
-import { buildWhatsAppRecoveryUrl, getPickupLocation, getWhatsAppDestination } from '@/lib/whatsapp';
+import { buildWhatsAppLocationUrl, getPickupLocation, getWhatsAppDestination } from '@/lib/whatsapp';
 
 type WhatsAppLocationButtonProps = {
   location: string;
   className?: string;
+  city?: string;
+  compact?: boolean;
+  variant?: 'standard' | 'sticky';
 };
 
-export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLocationButtonProps) {
+export function WhatsAppLocationButton({ location, className = '', city, compact = false, variant = 'standard' }: WhatsAppLocationButtonProps) {
   const destination = getWhatsAppDestination(businessConfig.whatsappHref);
   const disclosureId = useId();
   const [busy, setBusy] = useState(false);
@@ -58,7 +61,7 @@ export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLoc
       : 'Location unavailable. Opening WhatsApp with a blank pickup field for you to complete.');
     try {
       // Same-tab navigation works after the asynchronous location request without a popup.
-      window.location.assign(buildWhatsAppRecoveryUrl(destination, pickup));
+      window.location.assign(buildWhatsAppLocationUrl(destination, pickup, city));
     } catch {
       setNavigationFailed(true);
       setStatus('WhatsApp could not open. Please use the Call button for help.');
@@ -78,16 +81,16 @@ export function WhatsAppLocationButton({ location, className = '' }: WhatsAppLoc
         disabled={busy}
         aria-busy={busy}
         aria-describedby={disclosureId}
+        aria-label={busy ? 'Getting your location for WhatsApp' : 'Send location on WhatsApp'}
       >
-        <MessageCircle className="whatsapp-location-icon h-5 w-5 shrink-0 text-accent-light" aria-hidden="true" />
-        <span>{busy ? 'Getting your location…' : 'Share My Location on WhatsApp'}</span>
+        <WhatsAppIcon className="text-accent-light" />
+        <span>{busy ? (variant === 'sticky' ? 'Locating…' : 'Getting your location…') : variant === 'sticky' ? 'SEND LOCATION' : 'SEND LOCATION ON WHATSAPP'}</span>
       </button>
-      <p id={disclosureId} className="basis-full text-xs leading-relaxed text-text-muted">
-        With permission, add a Maps pickup link to a WhatsApp draft. Opening the draft shares
-        the link with WhatsApp. Review and send it yourself, or enter your location manually.{' '}
-        <a href={businessConfig.privacyUrl} className="text-accent-light underline underline-offset-4">
+      <p id={disclosureId} className={variant === 'sticky' ? 'sr-only' : `location-disclosure basis-full text-xs leading-relaxed text-text-muted${compact ? ' max-w-lg' : ''}`}>
+        {compact ? 'Location optional. Your pickup link goes to WhatsApp when the draft opens. You review and send.' : 'With permission, add a Maps pickup link to a WhatsApp draft. Opening the draft shares the link with WhatsApp. Review and send it yourself, or enter your location manually.'}{' '}
+        {variant !== 'sticky' && <><a href={businessConfig.privacyUrl} className="text-accent-light underline underline-offset-4">
           Location privacy
-        </a>.
+        </a>.</>}
       </p>
       <span role="status" aria-atomic="true" className={navigationFailed ? 'basis-full text-sm leading-5 text-text-main' : 'sr-only'}>
         {status}

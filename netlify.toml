@@ -1,5 +1,5 @@
 [build]
-  command = "npm run typecheck && npm run lint && npm test && npm run build"
+  command = "npm run typecheck && npm run lint && npm run build && npm test"
   publish = "dist"
 
 # Exact callback.html POST endpoint must stay free of Pretty URL redirects.
@@ -7,10 +7,10 @@
   pretty_urls = false
 
 # Redirect rules normalize away trailing slashes, so a slash-only 301 rule can loop.
-# This route-scoped handler inspects the original URL before the static rewrite.
+# This handler inspects the original URL for known canonical pages and aliases only.
 [[edge_functions]]
-  function = "canonical-birmingham"
-  pattern = "^/(recovery/birmingham|birmingham)/?$"
+  function = "canonical-pages"
+  pattern = "^/(areas|services|recovery|advice|birmingham|terms|guarantee|privacy)(/.*)?$|^/index[.]html$"
 
 # These domains must be assigned to this Netlify project and have valid certificates.
 [[redirects]]
@@ -31,8 +31,8 @@
   status = 301
   force = true
 
-# Only known legal and city routes get application entry points. The edge function above
-# handles Birmingham slash canonicalisation; these rules resolve its actual HTML file.
+# The build generates dist/_redirects for every known page. These existing legal and
+# Birmingham rules remain compatible; unknown URLs still receive a real HTTP 404.
 [[redirects]]
   from = "/index.html"
   to = "/"
@@ -75,7 +75,7 @@
   status = 200
   force = true
 
-# Publish additional city routes explicitly, alongside src/config/locations.ts.
+# Birmingham retains its original public path and static entry point.
 [[redirects]]
   from = "/recovery/birmingham/index.html"
   to = "/recovery/birmingham"

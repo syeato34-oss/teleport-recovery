@@ -1,0 +1,13 @@
+{
+  "src/lib/phoneNumber.ts": "f4a5d6848efdcfaef12ba062ae80c919602249ffe53749d86ca416d2cd6d989d",
+  "src/hooks/usePhoneNumber.ts": "9a0bb29c937ec1b4f4ccdb918b60b74cefeeac69fa07a149bd7513f61a7f2791",
+  "src/components/CallLink.tsx": "f6e92541523588d9f45fca90cb1c3364f6033dda82e62882ab973f48cab09a9d",
+  "src/lib/advertisingConsent.ts": "3d870aa92a96f97f37872987f169686d6eebd665014e3cc8614c3ded673f130d",
+  "src/components/AdvertisingConsent.tsx": "8278002b09d2d7756049634d2801741861de80bbe2f6172fa2fae08f67390db5",
+  "src/lib/tracking.ts": "436f6207c0655190b8ba8d7ee760dfa36bcdd7e1a47f0ea4a89a2961d1f50b88",
+  "src/lib/callback.ts": "01ebbd2b720c23ede447d2e01c6ccff83d4fbfa52a532262418316973597cac2",
+  "src/pages/LegalPage.tsx": "05a4bb7f03c244ba411929e240d5e2a4edbfb3af8978e5914c48117405ad9dde",
+  "src/config/business.ts": "29c00b9b4f26801ff7da7ccce598ba44310d76674b776f55b4087aae1f3023e0",
+  "netlify/edge-functions/canonical-birmingham.js": "080ccc4d2f15b64092611a9afe81358c1cda79880d2598e88997b839a5fe012b",
+  "docs/LAUNCH_AUDIT_2026-10-17.md": "0d471a0a9fa94335be4fbb022e446e1ec9505875ea0d80f7452fafdb9add8c63"
+}
